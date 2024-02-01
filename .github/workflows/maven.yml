@@ -19,7 +19,5 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-      - name: Clean and Compile
-        run: mvn -B clean compile --file pom.xml
       - name: Test
         run: mvn -B test --file pom.xml
