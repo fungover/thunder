@@ -3,4 +3,3 @@ target/
 .idea/
 .git/
 .DS_Store/
-Dockerfile
