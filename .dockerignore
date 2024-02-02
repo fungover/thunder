@@ -1,0 +1,6 @@
+target/
+.github/
+.idea/
+.git/
+.DS_Store/
+Dockerfile
