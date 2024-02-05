@@ -1,20 +1,5 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <h1 align="center">
-    <img src="https://www.iths.se/wp-content/uploads/2016/02/thumbnails/ithslogoliggandepayoffrgb-4601-1280x450.png" height="130" alt="ITHS">
+    <img src="https://www.iths.se/wp-content/uploads/2016/02/ithslogoliggandeposrgb-1024x207.png" height="130" alt="ITHS">
 </h1>
 
 # ⚡ Thunder ⚡
@@ -41,7 +26,7 @@
 Leveraging MQTT and Shelly smart home devices to seamlessly control a lamp's on/off functionality within a smart home setup.
 
 ## Installation
-+ Install IoT app for Smart Home based on MQTT protocol.
++ Install IoT app for Smart Home based on MQTT protocol, such as __[IoT MQTT Panel](https://play.google.com/store/apps/details?id=snr.lab.iotmqttpanel.prod&hl=sv&gl=DE)__.
 + Or use __[MQTT Explorer](https://mqtt-explorer.com/)__, an MQTT client that provides a structured overview of your MQTT topics.
 
 ## Instruction 
