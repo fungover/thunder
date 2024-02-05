@@ -9,6 +9,8 @@ public class Topic {
     }
 
     public static Topic createTopic(String topicName) {
+        if(topicName == null || topicName.isEmpty())
+            throw new IllegalArgumentException("Invalid topic, empty String");
         return new Topic(topicName);
     }
 

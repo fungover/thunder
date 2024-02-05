@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TopicTest{
 
@@ -26,6 +27,15 @@ public class TopicTest{
         Topic topic2 = Topic.createTopic("myhome/first_floor/kitchen/");
 
         assertThat(topic1.isExactMatch(topic2)).isFalse();
+
+    }
+
+    @Test
+    @DisplayName("Creating topic with empty string should throw IllegalArgumentException")
+    void creatingTopicWithEmptyStringShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,()-> Topic.createTopic(""));
+
+        assertThat(exception).hasMessage("Invalid topic, empty String");
 
     }
 
