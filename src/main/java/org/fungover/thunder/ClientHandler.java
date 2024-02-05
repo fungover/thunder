@@ -9,11 +9,15 @@ import java.util.List;
 
 public class ClientHandler {
     private final List<Socket> clients;
+    private final PackageReader packageReader;
+
     public ClientHandler() {
-         clients = Collections.synchronizedList(new ArrayList<>());
+        clients = Collections.synchronizedList(new ArrayList<>());
+        packageReader = new PackageReader();
     }
-    public void handleConnections(ServerSocket serverSocket){
-        while(!serverSocket.isClosed()){
+
+    public void handleConnections(ServerSocket serverSocket) throws IOException {
+        while (!serverSocket.isClosed()) {
             Socket connection = null;
             try {
                 connection = serverSocket.accept();
@@ -21,11 +25,15 @@ public class ClientHandler {
                 e.printStackTrace();
             }
             if (connection != null) {
-                System.out.println("New client: " + connection.getInetAddress().getHostName());
-                clients.add(connection);
+                if (packageReader.isValidConnection(connection)) {
+                    clients.add(connection);
+                }else{
+                    connection.close();
+                }
             }
         }
     }
+
     public List<Socket> getClients() {
         return clients;
     }
