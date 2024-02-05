@@ -26,11 +26,11 @@ public class PackageReader {
 
         if (isConnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT CONNECT message from client");
-            connectPackageSent.put(socket.getInetAddress(),true);
+            connectPackageSent.put(socket.getInetAddress(), true);
             sendConnackToClient(outputStream);
             System.out.println("Sent MQTT CONNACK message to client");
+            return true;
         }
-
         return false;
     }
 
