@@ -19,6 +19,16 @@ public class TopicTest{
 
     }
 
+    @Test
+    @DisplayName("Not exact match when given two topics")
+    void notExactMatchWhenGivenTwoTopics() {
+        Topic topic1 = Topic.createTopic("myhome/first_floor/kitchen/temperature");
+        Topic topic2 = Topic.createTopic("myhome/first_floor/kitchen/");
+
+        assertThat(topic1.isExactMatch(topic2)).isFalse();
+
+    }
+
 
 
 }
