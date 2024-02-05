@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class ClientHandler {
@@ -23,6 +24,20 @@ public class ClientHandler {
             if (connection != null) {
                 System.out.println("New client: " + connection.getInetAddress().getHostName());
                 clients.add(connection);
+            }
+            removeDisconnectedClients();
+        }
+    }
+
+    public void removeDisconnectedClients() {
+        synchronized (clients) {
+            Iterator<Socket> iterator = clients.iterator();
+            while (iterator.hasNext()) {
+                Socket client = iterator.next();
+                if (client.isClosed()) {
+                    System.out.println("Client disconnected: " + client.getInetAddress().getHostName());
+                    iterator.remove();
+                }
             }
         }
     }
