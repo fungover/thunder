@@ -5,13 +5,12 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args){
-        Server server = null;
+        Server server;
         try {
             server = new Server();
-        }  catch (IOException e) {
+            server.start();
+        }  catch (IOException | NullPointerException | InterruptedException e) {
             e.printStackTrace();
         }
-        if (server != null)
-            server.start();
     }
 }
