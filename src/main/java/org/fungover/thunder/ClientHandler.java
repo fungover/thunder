@@ -46,6 +46,20 @@ public class ClientHandler {
                     iterator.remove();
                 }
             }
+            removeDisconnectedClients();
+        }
+    }
+
+    public void removeDisconnectedClients() {
+        synchronized (clients) {
+            Iterator<Socket> iterator = clients.iterator();
+            while (iterator.hasNext()) {
+                Socket client = iterator.next();
+                if (client.isClosed()) {
+                    System.out.println("Client disconnected: " + client.getInetAddress().getHostName());
+                    iterator.remove();
+                }
+            }
         }
     }
 
