@@ -12,8 +12,9 @@ import static org.mockito.Mockito.*;
 
 class PackageReaderTest {
     PackageReader packageReader;
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         packageReader = new PackageReader();
     }
 
@@ -55,8 +56,8 @@ class PackageReaderTest {
     }
 
     @Test
-    @DisplayName("Socket should get response from sendConnackToClient")
-    void socketShouldGetResponseFromSendConnackToClient() throws IOException {
+    @DisplayName("Socket receive response if connect message is sent")
+    void socketReceiveResponseIfConnectMessageIsSent() throws IOException {
         Socket socketMock = mock(Socket.class);
         InputStream inputStream = new ByteArrayInputStream(new byte[]{0x10});
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -68,6 +69,7 @@ class PackageReaderTest {
 
         assertArrayEquals(connackMessage, bytesWritten);
     }
+
 
     @Test
     @DisplayName("Socket receive no response if no valid connect message is sent")
