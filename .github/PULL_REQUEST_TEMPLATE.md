@@ -1,12 +1,3 @@
----
-name: Pull Request
-about: Create a pull request to contribute to the project
-title: "[PR] - Brief Description of Changes"
-labels: ''
-assignees: ''
-
----
-
 ### Related Issue(s)
 Please list the issue(s) that this PR addresses or closes.
 Use the keyword 'Closes' if your PR resolves the issue, for example:
