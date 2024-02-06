@@ -1,33 +1,34 @@
 package org.fungover.thunder;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ClientHandler {
+public class ClientHandler implements Runnable {
     private final List<Socket> clients;
+
     public ClientHandler() {
-         clients = Collections.synchronizedList(new ArrayList<>());
+        clients = new CopyOnWriteArrayList<>();
     }
-    public void handleConnections(ServerSocket serverSocket){
-        while(!serverSocket.isClosed()){
-            Socket connection = null;
-            try {
-                connection = serverSocket.accept();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+    public void handleConnection(Socket clientSocket){
+        try {
+            while (!clientSocket.isClosed()) {
+                System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
+                clients.add(clientSocket);
+                clientSocket.close();
             }
-            if (connection != null) {
-                System.out.println("New client: " + connection.getInetAddress().getHostName());
-                clients.add(connection);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
     public List<Socket> getClients() {
         return clients;
     }
 
+    @Override
+    public void run() {
+        //Overridden from Runnable
+    }
 }
