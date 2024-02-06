@@ -6,15 +6,23 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClientHandler {
     private final List<Socket> clients;
+    private final PackageReader packageReader;
 
     public ClientHandler() {
         clients = new CopyOnWriteArrayList<>();
+        packageReader = new PackageReader();
     }
 
     public void handleConnection(Socket clientSocket) {
         try {
+            while (!clientSocket.isClosed()) {
                 System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
-                clients.add(clientSocket);
+                if (packageReader.isValidConnection(clientSocket)) {
+                    clients.add(clientSocket);
+                } else {
+                    clientSocket.close();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
