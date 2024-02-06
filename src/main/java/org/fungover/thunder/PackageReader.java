@@ -10,7 +10,8 @@ import java.util.Map;
 
 public class PackageReader {
     private final Map<InetAddress, Boolean> connectPackageSent = new HashMap<>();
-
+    private static final int CONNECTION_TIMEOUT = 30000;
+        static int i = 0;
     public boolean isValidConnection(Socket socket) throws IOException {
         InetAddress client = socket.getInetAddress();
 
@@ -18,7 +19,7 @@ public class PackageReader {
             return false;
         }
 
-        socket.setSoTimeout(30);
+        socket.setSoTimeout(CONNECTION_TIMEOUT);
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
         byte[] buffer = new byte[1024];
@@ -34,13 +35,13 @@ public class PackageReader {
         return false;
     }
 
-    private static void sendConnackToClient(OutputStream outputStream) throws IOException {
+   private static void sendConnackToClient(OutputStream outputStream) throws IOException {
         byte[] connackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
         outputStream.write(connackMessage);
         outputStream.flush();
     }
 
-    private boolean isConnectPackage(int bytesRead, byte[] buffer) {
+    private static boolean isConnectPackage(int bytesRead, byte[] buffer) {
         return bytesRead > 0 && buffer[0] == (byte) 0x10;
     }
 }
