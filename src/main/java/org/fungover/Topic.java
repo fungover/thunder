@@ -15,6 +15,23 @@ public class Topic {
         return new Topic(topicName);
     }
 
+    public boolean matchesWildcard(String otherTopic) {
+        String[] thisLevels = this.name.split("/");
+        String[] otherLevels = otherTopic.split("/");
+
+        if (thisLevels.length != otherLevels.length) {
+            return false;
+        }
+
+        for (int i = 0; i < thisLevels.length; i++) {
+            if (!thisLevels[i].equals(otherLevels[i]) && !thisLevels[i].equals("+")) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

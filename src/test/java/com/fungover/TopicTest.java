@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TopicTest{
 
@@ -27,7 +27,6 @@ public class TopicTest{
         Topic topic2 = Topic.create("myhome/first_floor/kitchen/");
 
         assertThat(topic1.equals(topic2)).isFalse();
-
     }
 
     @Test
@@ -36,7 +35,6 @@ public class TopicTest{
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,()-> Topic.create(""));
 
         assertThat(exception).hasMessage("Invalid topic");
-
     }
 
     @Test
@@ -45,6 +43,25 @@ public class TopicTest{
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create("/invalid/topic"));
 
         assertThat(exception).hasMessage("Invalid topic");
+    }
+
+    @Test
+    @DisplayName("Positive match with single level wildcard (+)")
+    void positiveMatchWithSingleLevelWildcard() {
+        Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature");
+
+        assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/livingroom/temperature")).isTrue();
+        assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/temperature")).isTrue();
+    }
+
+    @Test
+    @DisplayName("Negative match with single level wildcard (+)")
+    public void negativeMatchWithSingleLevelWildcard() {
+        Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature");
+
+        assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/brightness")).isFalse();
+        assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/firstfloor/kitchen/temperature")).isFalse();
+        assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/fridge/temperature")).isFalse();
     }
 
 }
