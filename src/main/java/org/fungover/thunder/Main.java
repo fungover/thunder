@@ -9,7 +9,7 @@ public class Main {
         try {
             server = new Server();
             server.start();
-        }  catch (IOException | NullPointerException | InterruptedException e) {
+        }  catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }
