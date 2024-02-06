@@ -17,7 +17,6 @@ public class TopicTest{
         Topic topic2 = Topic.create("myhome/first_floor/kitchen/temperature");
 
         assertThat(topic1.equals(topic2)).isTrue();
-
     }
 
     @Test
@@ -34,7 +33,7 @@ public class TopicTest{
     void creatingTopicWithEmptyStringShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,()-> Topic.create(""));
 
-        assertThat(exception).hasMessage("Invalid topic");
+        assertThat(exception).hasMessage("Invalid topic: Should contain at least one character");
     }
 
     @Test
@@ -42,7 +41,7 @@ public class TopicTest{
     void topicCanNotStartWithForwardSlash() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create("/invalid/topic"));
 
-        assertThat(exception).hasMessage("Invalid topic");
+        assertThat(exception).hasMessage("Invalid topic: Can not begin with '/'");
     }
 
     @Test
@@ -82,4 +81,13 @@ public class TopicTest{
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/firstfloor/kitchen/temperature")).isFalse();
     }
 
+    @Test
+    @DisplayName("Wrong placement for multi level wildcard in topic should throw Exception")
+    void wrongPlacementForMultiLevelWildcardInTopic() {
+        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/#/temperature"));
+        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/groundfloor/#/kitchen/#"));
+
+        assertThat(exception1).hasMessage("Invalid topic: Multi-level wildcard (#) must be placed as the last character in the topic, preceded by a forward slash");
+        assertThat(exception2).hasMessage("Invalid topic: Multi-level wildcard (#) must be placed as the last character in the topic, preceded by a forward slash");
+    }
 }

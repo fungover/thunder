@@ -10,9 +10,27 @@ public class Topic {
    }
 
     public static Topic create(String topicName) {
-        if(topicName == null || topicName.isEmpty() || topicName.startsWith("/"))
-            throw new IllegalArgumentException("Invalid topic");
+        if (topicName == null || topicName.isEmpty())
+            throw new IllegalArgumentException("Invalid topic: Should contain at least one character");
+        if (topicName.startsWith("/"))
+            throw new IllegalArgumentException("Invalid topic: Can not begin with '/'");
+        if (topicName.contains("#")) {
+            int count = countAmountOfMultiLevelWildcard(topicName);
+            if (count == 1 && !topicName.endsWith("/#") || count > 1)
+                throw new IllegalArgumentException("Invalid topic: Multi-level wildcard (#) must be placed as the last character in the topic, preceded by a forward slash");
+        }
         return new Topic(topicName);
+    }
+
+    // Checks how many '#' there is in topic
+    public static int countAmountOfMultiLevelWildcard(String topicName) {
+        int count = 0;
+        for (int i = 0; i < topicName.length(); i++) {
+            if (topicName.charAt(i) == '#') {
+                count++;
+            }
+        }
+        return count;
     }
 
     public boolean matchesWildcard(String otherTopic) {
