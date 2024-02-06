@@ -13,11 +13,8 @@ public class ClientHandler {
 
     public void handleConnection(Socket clientSocket) {
         try {
-            while (!clientSocket.isClosed()) {
                 System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
                 clients.add(clientSocket);
-                clientSocket.close();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
