@@ -3,10 +3,14 @@ package org.fungover;
 import java.util.Objects;
 
 public class Topic {
-    String name;
+    private String name;
 
     private Topic (String name) {
         this.name = name;
+   }
+
+   public String getName() {
+        return name;
    }
 
     public static Topic create(String topicName) {
