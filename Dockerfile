@@ -5,4 +5,4 @@ RUN mvn -f /src/pom.xml clean package
 FROM eclipse-temurin:21.0.2_13-jre-alpine
 COPY --from=build /src/target/*.jar /thunder.jar
 EXPOSE 1883
-ENTRYPOINT ["java", "-cp", "/thunder.jar", "org.fungover.Main"]
+ENTRYPOINT ["java", "-cp", "/thunder.jar", "org.fungover.thunder.Main"]
