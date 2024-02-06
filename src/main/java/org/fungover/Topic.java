@@ -19,12 +19,12 @@ public class Topic {
         String[] thisLevels = this.name.split("/");
         String[] otherLevels = otherTopic.split("/");
 
-        if (thisLevels.length != otherLevels.length) {
+        if (thisLevels.length > otherLevels.length) {
             return false;
         }
 
         for (int i = 0; i < thisLevels.length; i++) {
-            if (!thisLevels[i].equals(otherLevels[i]) && !thisLevels[i].equals("+")) {
+            if (!thisLevels[i].equals(otherLevels[i]) && !thisLevels[i].equals("+") && !thisLevels[i].equals("#")) {
                 return false;
             }
         }

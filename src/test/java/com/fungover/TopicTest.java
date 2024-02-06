@@ -64,4 +64,22 @@ public class TopicTest{
         assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/fridge/temperature")).isFalse();
     }
 
+    @Test
+    @DisplayName("Positive match with multi level wildcard (#)")
+    public void positiveMatchWithMultiLevelWildcard() {
+        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
+
+        assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor/livingroom/temperature")).isTrue();
+        assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/temperature")).isTrue();
+        assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/brightness")).isTrue();
+    }
+
+    @Test
+    @DisplayName("Negative match with multi level wildcard (#)")
+    public void negativeMatchWithMultiLevelWildcard() {
+        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
+
+        assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/firstfloor/kitchen/temperature")).isFalse();
+    }
+
 }
