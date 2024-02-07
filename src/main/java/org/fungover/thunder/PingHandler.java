@@ -6,18 +6,23 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class PingHandler {
-    private InputStream inputStream;
-    private OutputStream outputStream;
 
-    public PingHandler(Socket socket) throws IOException {
-        this.inputStream = socket.getInputStream();
-        this.outputStream = socket.getOutputStream();
+    public PingHandler() {
     }
-    public void handlePing(){
+
+    public void handlePing(Socket socket) throws IOException {
+
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
         try {
+            inputStream = socket.getInputStream();
+            outputStream = socket.getOutputStream();
+
             byte[] buffer = new byte[1024];
             int bytesRead = inputStream.read(buffer);
 
+            System.out.println("Bytes read: " + bytesRead);
+            System.out.printf("First byte: 0x%02X\n", buffer[0]);
             if (bytesRead > 0 && buffer[0] == (byte) 0xC0) {
                 System.out.println("Received MQTT PINGREQ message from client");
                 byte[] pingrespMessage = new byte[]{(byte) 0xD0, (byte) 0x00};
