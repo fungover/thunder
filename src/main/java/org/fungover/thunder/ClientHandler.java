@@ -1,38 +1,36 @@
 package org.fungover.thunder;
 
+
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClientHandler {
     private final List<Socket> clients;
     private final PackageReader packageReader;
 
     public ClientHandler() {
-        clients = new CopyOnWriteArrayList<>();
+        clients = Collections.synchronizedList(new ArrayList<>());
         packageReader = new PackageReader();
     }
 
-    public void handleConnections(ServerSocket serverSocket) {
-        while (!serverSocket.isClosed()) {
-            Socket connection = null;
-            try {
-                connection = serverSocket.accept();
-                addNewConnectedClient(connection);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void handleConnection(Socket clientSocket) {
+        try {
+            if (packageReader.isValidConnection(clientSocket)) {
+                System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
+                clients.add(clientSocket);
+            } else {
+                clientSocket.close();
+            }
+            while (!clientSocket.isClosed()) {
+                //Logic to read from or disconnect client.
+                break;
             }
             removeDisconnectedClients();
-        }
-    }
-
-    private void addNewConnectedClient(Socket connection) {
-        if (connection != null) {
-            System.out.println("New client: " + connection.getInetAddress().getHostName());
-            clients.add(connection);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -48,7 +46,6 @@ public class ClientHandler {
             }
         }
     }
-
 
     public List<Socket> getClients() {
         return clients;
