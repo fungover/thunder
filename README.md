@@ -22,7 +22,7 @@
 
 
 
-## Description:
+## Description
 Leveraging MQTT and Shelly smart home devices to seamlessly control a lamp's on/off functionality within a smart home setup.
 
 ## Installation
@@ -36,5 +36,8 @@ Leveraging MQTT and Shelly smart home devices to seamlessly control a lamp's on/
 ...needs to be updated later on in the project..
 "Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space."
 
-
+## Licensing
+This software is licensed under the MIT License, allowing you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software under the following conditions:
++ Include the original copyright message and the MIT License in all copies or substantial portions of the software.
+For more details, refer to the [MIT License](LICENSE) file.
 
