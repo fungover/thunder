@@ -32,7 +32,7 @@ public class PackageReader {
             return true;
         }
 
-        return true;
+        return false;
     }
 
    private static void sendConnackToClient(OutputStream outputStream) throws IOException {
