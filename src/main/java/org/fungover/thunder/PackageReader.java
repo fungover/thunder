@@ -44,4 +44,28 @@ public class PackageReader {
     private static boolean isConnectPackage(int bytesRead, byte[] buffer) {
         return bytesRead > 0 && buffer[0] == (byte) 0x10;
     }
+
+    private static boolean isDisconnectPackage(int bytesRead, byte[] buffer){
+        return bytesRead > 0 && buffer[0] == (byte) 0xE0;
+    }
+
+    public boolean isCleanDisconnect(Socket socket) throws IOException {
+        InetAddress client = socket.getInetAddress();
+
+        if (!connectPackageSent.containsKey(client)){
+            return false;
+        }
+
+        InputStream inputStream = socket.getInputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead = inputStream.read(buffer);
+
+        if (isDisconnectPackage(bytesRead, buffer)) {
+            System.out.println("Received MQTT DISCONNECT message from client");
+            connectPackageSent.put(socket.getInetAddress(), true);
+            connectPackageSent.remove(client);
+            return true;
+        }
+        return false;
+    }
 }

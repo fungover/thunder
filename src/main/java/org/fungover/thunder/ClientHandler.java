@@ -30,6 +30,10 @@ public class ClientHandler {
                 }else{
                     connection.close();
                 }
+                if (packageReader.isCleanDisconnect(connection)){
+                    clients.remove(connection);
+                    connection.close();
+                }
             }
         }
     }
