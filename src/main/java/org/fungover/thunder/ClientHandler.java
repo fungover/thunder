@@ -17,7 +17,7 @@ public class ClientHandler {
 
     public void handleConnections(ServerSocket serverSocket) {
         while (!serverSocket.isClosed()) {
-            Socket connection = null;
+            Socket connection;
             try {
                 connection = serverSocket.accept();
                 addNewConnectedClient(connection);
