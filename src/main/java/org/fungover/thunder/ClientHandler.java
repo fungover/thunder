@@ -15,13 +15,14 @@ public class ClientHandler {
 
     public void handleConnection(Socket clientSocket) {
         try {
-            while (!clientSocket.isClosed()) {
+            if (packageReader.isValidConnection(clientSocket)) {
                 System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
-                if (packageReader.isValidConnection(clientSocket)) {
-                    clients.add(clientSocket);
-                } else {
-                    clientSocket.close();
-                }
+                clients.add(clientSocket);
+            } else {
+                //Disconnect client/close socket
+            }
+            while (!clientSocket.isClosed()) {
+                //Logic to read from or disconnect client.
             }
         } catch (Exception e) {
             e.printStackTrace();
