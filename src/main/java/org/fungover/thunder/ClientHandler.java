@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ClientHandler {
-    private final List<Socket> clients;
+    private final List<Client> clients;
     private final PackageReader packageReader;
 
     public ClientHandler() {
@@ -32,18 +32,20 @@ public class ClientHandler {
 
     private void addNewConnectedClient(Socket connection) {
         if (connection != null) {
+            Client client = new Client("Client-" + clients.size(), new TopicManager());
+            client.connect();
+            clients.add(client);
             System.out.println("New client: " + connection.getInetAddress().getHostName());
-            clients.add(connection);
         }
     }
 
     public void removeDisconnectedClients() {
         synchronized (clients) {
-            Iterator<Socket> iterator = clients.iterator();
+            Iterator<Client> iterator = clients.iterator();
             while (iterator.hasNext()) {
-                Socket client = iterator.next();
-                if (client.isClosed()) {
-                    System.out.println("Client disconnected: " + client.getInetAddress().getHostName());
+                Client client = iterator.next();
+                if (!client.isConnected()) {
+                    System.out.println("Client disconnected: " + client.getClientId());
                     iterator.remove();
                 }
             }
@@ -51,8 +53,8 @@ public class ClientHandler {
     }
 
 
-    public List<Socket> getClients() {
-        return clients;
+    public List<Client> getClients() {
+        return new ArrayList<>(clients);
     }
 
 }

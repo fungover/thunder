@@ -26,12 +26,7 @@ public class Client {
 
     public void connect() {
         if (!connected) {
-            // Perform necessary tasks for establishing the connection
-
-            // Example: Simulate establishing a connection by printing a message
             System.out.println("Client " + clientId + " connected.");
-
-            // Additional logic specific to your application, e.g., authentication, setup, etc.
             connected = true;
         } else {
             System.out.println("Client " + clientId + " is already connected.");
@@ -62,7 +57,6 @@ public class Client {
     }
 
     public void handleMessage(String topic, String message) {
-        // Additional logic for handling incoming messages
         System.out.println("Received message on topic " + topic + " from client " + clientId + ": " + message);
     }
 }

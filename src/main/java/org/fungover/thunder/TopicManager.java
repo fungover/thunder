@@ -22,16 +22,11 @@ public class TopicManager {
         subscriptions.computeIfPresent(topic, (k, clients) -> {
             clients.remove(client);
             if (clients.isEmpty()) {
-                // Remove the topic entry if no clients are subscribed
                 return null;
             }
             return clients;
         });
         System.out.println("Client " + client.getClientId() + " unsubscribed from topic: " + topic);
-    }
-
-    public Set<Client> getClientsForTopic(String topic) {
-        return subscriptions.getOrDefault(topic, new HashSet<>());
     }
 
 }
