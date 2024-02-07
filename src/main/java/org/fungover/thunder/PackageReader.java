@@ -13,16 +13,16 @@ public class PackageReader {
     private static final int CONNECTION_TIMEOUT = 30000;
     public boolean isValidConnection(Socket socket) throws IOException {
         InetAddress client = socket.getInetAddress();
+        byte[] buffer = new byte[1024];
+        InputStream inputStream = socket.getInputStream();
+        OutputStream outputStream = socket.getOutputStream();
+        int bytesRead = inputStream.read(buffer);
 
-        if (connectPackageSent.containsKey(client) && Boolean.TRUE.equals(connectPackageSent.get(client))) {
+        if (connectPackageSent.containsKey(client) && Boolean.TRUE.equals(connectPackageSent.get(client)) && buffer[0] == 0x10) {
             return false;
         }
 
         socket.setSoTimeout(CONNECTION_TIMEOUT);
-        InputStream inputStream = socket.getInputStream();
-        OutputStream outputStream = socket.getOutputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead = inputStream.read(buffer);
 
         if (isConnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT CONNECT message from client");
@@ -31,7 +31,8 @@ public class PackageReader {
             System.out.println("Sent MQTT CONNACK message to client");
             return true;
         }
-        return false;
+
+        return true;
     }
 
    private static void sendConnackToClient(OutputStream outputStream) throws IOException {
