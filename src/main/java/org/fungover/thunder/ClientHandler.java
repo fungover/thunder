@@ -31,8 +31,8 @@ public class ClientHandler {
                     connection.close();
                 }
                 if (packageReader.isCleanDisconnect(connection)){
-                    clients.remove(connection);
                     connection.close();
+                    clients.remove(connection);
                 }
             }
         }

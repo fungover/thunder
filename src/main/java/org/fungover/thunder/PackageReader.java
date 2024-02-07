@@ -62,7 +62,6 @@ public class PackageReader {
 
         if (isDisconnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT DISCONNECT message from client");
-            connectPackageSent.put(socket.getInetAddress(), true);
             connectPackageSent.remove(client);
             return true;
         }
