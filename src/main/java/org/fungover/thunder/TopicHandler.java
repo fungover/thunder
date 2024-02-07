@@ -5,11 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class TopicManager {
+public class TopicHandler {
 
     private final Map<String, Set<Client>> subscriptions;
 
-    public TopicManager() {
+    public TopicHandler() {
         this.subscriptions = new HashMap<>();
     }
 

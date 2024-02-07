@@ -5,9 +5,9 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args){
-        Server server = null;
+        Broker server = null;
         try {
-            server = new Server();
+            server = new Broker();
         }  catch (IOException e) {
             e.printStackTrace();
         }

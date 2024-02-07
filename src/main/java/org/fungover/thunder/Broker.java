@@ -3,11 +3,11 @@ package org.fungover.thunder;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-public class Server {
+public class Broker {
 
     private final ServerSocket serverSocket;
     private final ClientHandler clientHandler;
-    public Server() throws IOException {
+    public Broker() throws IOException {
         this.clientHandler = new ClientHandler();
         this.serverSocket = new ServerSocket(1883);
     }

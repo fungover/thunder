@@ -1,17 +1,18 @@
 package org.fungover.thunder;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Client {
     private final String clientId;
-    private final TopicManager topicManager;
+    private final TopicHandler topicHandler;
     private boolean connected;
     private Set<String> subscribedTopics;
 
-    public Client(String clientId, TopicManager topicManager) {
+    public Client(String clientId, TopicHandler topicManager) {
         this.clientId = clientId;
-        this.topicManager = topicManager;
+        this.topicHandler = topicManager;
         this.connected = false;
         this.subscribedTopics = new HashSet<>();
     }
@@ -26,13 +27,14 @@ public class Client {
 
     public void connect() {
         if (!connected) {
-            System.out.println("Client " + clientId + " connected.");
+            // Establish a connection to the MQTT broker
+            // Perform the MQTT connection handshake
+            System.out.println("Client " + clientId + " connected to broker.");
             connected = true;
         } else {
             System.out.println("Client " + clientId + " is already connected.");
         }
     }
-
 
     public void disconnect() {
         connected = false;
@@ -44,19 +46,15 @@ public class Client {
 
     public void subscribe(String topic) {
         if (connected) {
-            topicManager.subscribe(this, topic);
+            topicHandler.subscribe(this, topic);
             subscribedTopics.add(topic);
         }
     }
 
     public void unsubscribe(String topic) {
         if (connected) {
-            topicManager.unsubscribe(this, topic);
+            topicHandler.unsubscribe(this, topic);
             subscribedTopics.remove(topic);
         }
-    }
-
-    public void handleMessage(String topic, String message) {
-        System.out.println("Received message on topic " + topic + " from client " + clientId + ": " + message);
     }
 }

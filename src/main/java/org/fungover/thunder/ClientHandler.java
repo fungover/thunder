@@ -10,11 +10,9 @@ import java.util.List;
 
 public class ClientHandler {
     private final List<Client> clients;
-    private final PackageReader packageReader;
 
     public ClientHandler() {
         clients = Collections.synchronizedList(new ArrayList<>());
-        packageReader = new PackageReader();
     }
 
     public void handleConnections(ServerSocket serverSocket) {
@@ -32,7 +30,7 @@ public class ClientHandler {
 
     private void addNewConnectedClient(Socket connection) {
         if (connection != null) {
-            Client client = new Client("Client-" + clients.size(), new TopicManager());
+            Client client = new Client("Client-" + clients.size(), new TopicHandler());
             client.connect();
             clients.add(client);
             System.out.println("New client: " + connection.getInetAddress().getHostName());
