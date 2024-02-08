@@ -1,10 +1,10 @@
 package org.fungover.thunder;
 
-import java.io.IOException;
-import java.net.ServerSocket;
+
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class ClientHandler {
@@ -16,19 +16,32 @@ public class ClientHandler {
         packageReader = new PackageReader();
     }
 
-    public void handleConnections(ServerSocket serverSocket) throws IOException {
-        while (!serverSocket.isClosed()) {
-            Socket connection = null;
-            try {
-                connection = serverSocket.accept();
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void handleConnection(Socket clientSocket) {
+        try {
+            if (packageReader.isValidConnection(clientSocket)) {
+                System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
+                clients.add(clientSocket);
+            } else {
+                clientSocket.close();
             }
-            if (connection != null) {
-                if (packageReader.isValidConnection(connection)) {
-                    clients.add(connection);
-                }else{
-                    connection.close();
+            while (!clientSocket.isClosed()) {
+                //Logic to read from or disconnect client.
+                break;
+            }
+            removeDisconnectedClients();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeDisconnectedClients() {
+        synchronized (clients) {
+            Iterator<Socket> iterator = clients.iterator();
+            while (iterator.hasNext()) {
+                Socket client = iterator.next();
+                if (client.isClosed()) {
+                    System.out.println("Client disconnected: " + client.getInetAddress().getHostName());
+                    iterator.remove();
                 }
                 if (packageReader.isCleanDisconnect(connection)){
                     connection.close();
@@ -41,5 +54,4 @@ public class ClientHandler {
     public List<Socket> getClients() {
         return clients;
     }
-
 }
