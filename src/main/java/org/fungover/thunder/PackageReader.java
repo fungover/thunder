@@ -56,7 +56,7 @@ public class PackageReader {
     public boolean isCleanDisconnect(Socket socket) throws IOException {
         InetAddress client = socket.getInetAddress();
 
-        if (!connectPackageSent.containsKey(client)){
+        if (isClientConnected(client)){
             return false;
         }
 
@@ -70,5 +70,9 @@ public class PackageReader {
             return true;
         }
         return false;
+    }
+
+    private boolean isClientConnected(InetAddress client) {
+        return !connectPackageSent.containsKey(client);
     }
 }

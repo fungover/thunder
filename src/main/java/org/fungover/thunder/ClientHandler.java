@@ -25,8 +25,10 @@ public class ClientHandler {
                 clientSocket.close();
             }
             while (!clientSocket.isClosed()) {
-                //Logic to read from or disconnect client.
-                break;
+                if (packageReader.isCleanDisconnect(clientSocket)){
+                    clientSocket.close();
+                    clients.remove(clientSocket);
+                }
             }
             removeDisconnectedClients();
         } catch (Exception e) {
@@ -42,10 +44,6 @@ public class ClientHandler {
                 if (client.isClosed()) {
                     System.out.println("Client disconnected: " + client.getInetAddress().getHostName());
                     iterator.remove();
-                }
-                if (packageReader.isCleanDisconnect(connection)){
-                    connection.close();
-                    clients.remove(connection);
                 }
             }
         }
