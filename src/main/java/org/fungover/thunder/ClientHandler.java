@@ -1,6 +1,7 @@
 package org.fungover.thunder;
 
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.List;
 public class ClientHandler {
     private final List<Socket> clients;
     private final PackageReader packageReader;
+    boolean isClientSocketClosed = false;
 
     public ClientHandler() {
         clients = Collections.synchronizedList(new ArrayList<>());
@@ -24,14 +26,18 @@ public class ClientHandler {
             } else {
                 clientSocket.close();
             }
-            while (!clientSocket.isClosed()) {
-                //Logic to read from or disconnect client.
-                break;
+            while (!isClientSocketClosed) {
+                isClientSocketClosed = packageReader.readFromClient(clientSocket);
             }
+            closeClientSocket(clientSocket);
             removeDisconnectedClients();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void closeClientSocket(Socket clientSocket) throws IOException {
+        clientSocket.close();
     }
 
     public void removeDisconnectedClients() {
