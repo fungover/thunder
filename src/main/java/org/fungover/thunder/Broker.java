@@ -2,6 +2,7 @@ package org.fungover.thunder;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Broker {
 
@@ -12,11 +13,18 @@ public class Broker {
         this.serverSocket = serverSocket;
     }
 
-    public void start() {
+
+    public void start() throws IOException {
+        System.out.println("Server started on port 1883");
         try {
-            System.out.println("Server started on port 1883");
-            clientHandler.handleConnections(serverSocket);
-        }  catch (Exception e) {
+            while (!serverSocket.isClosed()) {
+                Socket connection = serverSocket.accept();
+                if (connection == null)
+                    throw new NullPointerException("Connection is null");
+                Thread.ofVirtual().start(() -> clientHandler.handleConnection(connection));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

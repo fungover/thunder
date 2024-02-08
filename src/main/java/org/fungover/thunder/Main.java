@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
         Broker broker = null;
         try {
             ServerSocket serverSocket = new ServerSocket(1883);
@@ -13,7 +13,8 @@ public class Main {
             broker = new Broker(clientHandler, serverSocket);
         }  catch (IOException e) {
         }
-        if (broker != null)
+        if (broker != null) {
             broker.start();
+        }
     }
 }

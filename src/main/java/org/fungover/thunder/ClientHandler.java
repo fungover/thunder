@@ -9,41 +9,46 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ClientHandler {
-    private final List<Client> clients;
+    private final List<Socket> clients;
+    private final PackageReader packageReader;
 
     public ClientHandler() {
         clients = Collections.synchronizedList(new ArrayList<>());
+        packageReader = new PackageReader();
     }
 
-    public void handleConnections(ServerSocket serverSocket) {
-        while (!serverSocket.isClosed()) {
-            Socket connection;
-            try {
-                connection = serverSocket.accept();
-                addNewConnectedClient(connection);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void handleConnection(Socket clientSocket) {
+        try {
+            if (packageReader.isValidConnection(clientSocket)) {
+                System.out.println("New client: " + clientSocket.getInetAddress().getHostName());
+                clients.add(clientSocket);
+            } else {
+                clientSocket.close();
+            }
+            while (!clientSocket.isClosed()) {
+                //Logic to read from or disconnect client.
+                break;
             }
             removeDisconnectedClients();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     private void addNewConnectedClient(Socket connection) {
         if (connection != null) {
-            Client client = new Client("Client-" + clients.size(), new TopicHandler());
-            client.connect();
-            clients.add(client);
             System.out.println("New client: " + connection.getInetAddress().getHostName());
+            clients.add(connection);
         }
     }
 
     public void removeDisconnectedClients() {
         synchronized (clients) {
-            Iterator<Client> iterator = clients.iterator();
+            Iterator<Socket> iterator = clients.iterator();
             while (iterator.hasNext()) {
-                Client client = iterator.next();
-                if (!client.isConnected()) {
-                    System.out.println("Client disconnected: " + client.getClientId());
+                Socket client = iterator.next();
+                if (client.isClosed()) {
+                    System.out.println("Client disconnected: " + client.getInetAddress().getHostName());
                     iterator.remove();
                 }
             }
@@ -51,8 +56,8 @@ public class ClientHandler {
     }
 
 
-    public List<Client> getClients() {
-        return new ArrayList<>(clients);
+    public List<Socket> getClients() {
+        return clients;
     }
 
 }
