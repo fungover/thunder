@@ -65,5 +65,8 @@ public record Topic(String name) {
         return true;
     }
 
+    public boolean isValidForPublishing() {
+        return !(name.startsWith("$") || name.endsWith("/#") || name.contains("/+"));
+    }
 
 }

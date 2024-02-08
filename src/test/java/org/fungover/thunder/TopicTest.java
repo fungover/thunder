@@ -107,4 +107,34 @@ class TopicTest {
         assertThat(exception2).hasMessage("Invalid topic: Can not contain '$'");
     }
 
+    @Test
+    @DisplayName("Topic that is valid for publishing")
+    void topicThatIsValidForPublishing() {
+        Topic topic1 = Topic.create("myHome/groundfloor/kitchen/temp");
+
+        assertThat(topic1.isValidForPublishing()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Wildcard topic not valid for publishing")
+    void wildcardTopicNotValidForPublishing() {
+        Topic wildcardTopic1 = Topic.create("myHome/+/kitchen/#");
+        Topic wildcardTopic2 = Topic.create("myHome/groundfloor/+");
+        Topic wildcardTopic3 = Topic.create("myHome/groundfloor/#");
+
+        assertThat(wildcardTopic1.isValidForPublishing()).isFalse();
+        assertThat(wildcardTopic2.isValidForPublishing()).isFalse();
+        assertThat(wildcardTopic3.isValidForPublishing()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Internal Topic not valid for publishing")
+    void internalTopicNotValidForPublishing() {
+        Topic internalTopic1 = new Topic("$SYS");
+        Topic internalTopic2 = new Topic("$SYS/#");
+
+        assertThat(internalTopic1.isValidForPublishing()).isFalse();
+        assertThat(internalTopic2.isValidForPublishing()).isFalse();
+    }
+
 }
