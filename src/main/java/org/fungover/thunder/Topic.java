@@ -1,17 +1,7 @@
-package org.fungover;
+package org.fungover.thunder;
 
-import java.util.Objects;
+public record Topic(String name) {
 
-public class Topic {
-    private String name;
-
-    private Topic (String name) {
-        this.name = name;
-   }
-
-   public String getName() {
-        return name;
-   }
 
     public static Topic create(String topicName) {
         if (topicName == null || topicName.isEmpty())
@@ -54,15 +44,5 @@ public class Topic {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Topic topic)) return false;
-        return Objects.equals(name, topic.name);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
 }

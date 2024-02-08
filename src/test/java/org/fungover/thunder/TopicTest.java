@@ -1,7 +1,5 @@
-package com.fungover;
+package org.fungover.thunder;
 
-
-import org.fungover.Topic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
