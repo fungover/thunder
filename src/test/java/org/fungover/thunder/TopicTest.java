@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TopicTest{
+class TopicTest {
 
     @Test
     @DisplayName("Exact match when given two topics")
     void exactMatchWhenGivenTwoTopics() {
-        Topic topic1 =  Topic.create ("myhome/first_floor/kitchen/temperature");
+        Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature");
         Topic topic2 = Topic.create("myhome/first_floor/kitchen/temperature");
 
         assertThat(topic1.equals(topic2)).isTrue();
@@ -29,7 +29,7 @@ public class TopicTest{
     @Test
     @DisplayName("Creating topic with empty string should throw IllegalArgumentException")
     void creatingTopicWithEmptyStringShouldThrowIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,()-> Topic.create(""));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create(""));
 
         assertThat(exception).hasMessage("Invalid topic: Should contain at least one character");
     }
@@ -53,7 +53,7 @@ public class TopicTest{
 
     @Test
     @DisplayName("Negative match with single level wildcard (+)")
-    public void negativeMatchWithSingleLevelWildcard() {
+    void negativeMatchWithSingleLevelWildcard() {
         Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature");
 
         assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/brightness")).isFalse();
@@ -63,7 +63,7 @@ public class TopicTest{
 
     @Test
     @DisplayName("Positive match with multi level wildcard (#)")
-    public void positiveMatchWithMultiLevelWildcard() {
+    void positiveMatchWithMultiLevelWildcard() {
         Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
 
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor/livingroom/temperature")).isTrue();
@@ -73,7 +73,7 @@ public class TopicTest{
 
     @Test
     @DisplayName("Negative match with multi level wildcard (#)")
-    public void negativeMatchWithMultiLevelWildcard() {
+    void negativeMatchWithMultiLevelWildcard() {
         Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
 
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/firstfloor/kitchen/temperature")).isFalse();
