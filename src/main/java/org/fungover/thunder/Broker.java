@@ -23,7 +23,6 @@ public class Broker {
                 Thread.ofVirtual().start(() -> clientHandler.handleConnection(connection));
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

@@ -1,7 +1,6 @@
 package org.fungover.thunder;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,13 +31,6 @@ public class ClientHandler {
             removeDisconnectedClients();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void addNewConnectedClient(Socket connection) {
-        if (connection != null) {
-            System.out.println("New client: " + connection.getInetAddress().getHostName());
-            clients.add(connection);
         }
     }
 
