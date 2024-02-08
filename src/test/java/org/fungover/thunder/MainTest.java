@@ -1,5 +1,5 @@
-package org.fungover.thunder;
-
+import org.fungover.thunder.Broker;
+import org.fungover.thunder.Main;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,8 +19,13 @@ class MainTest {
 
     @Test
     void givenCreateAndStartBrokerIsCalledThenBrokerStartShouldBeInvoked() throws IOException {
+        // Initialize mocks
         MockitoAnnotations.openMocks(this);
-        Main.createAndStartBroker(brokerMock);
+
+        // Call the method to create and start the Broker
+        main.createAndStartBroker(brokerMock);
+
+        // Verify that the start method of the broker is invoked
         verify(brokerMock, times(1)).start();
     }
 }
