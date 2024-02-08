@@ -17,7 +17,6 @@ public class Broker {
             System.out.println("Server started on port 1883");
             clientHandler.handleConnections(serverSocket);
         }  catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }
