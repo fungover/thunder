@@ -24,25 +24,25 @@ class SubscriptionTest {
         subscription = new Subscription();
     }
 
+
     @Test
-    @DisplayName("Gets assigned to topic after connection and subscription")
-    void getsAssignedToTopicAfterConnectionAndSubscription() throws IOException {
+    @DisplayName("Two different topic subscriptions should return map size 2")
+    void twoDifferentTopicSubscriptionsShouldReturnMapSize2(){
+        String topicHelloSlashWorldInBytes = new String(new byte[]{0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2F, 0x77, 0x6F, 0x72, 0x6C, 0x64},StandardCharsets.UTF_8);
+        String topicWorldInBytes = new String(new byte[]{0x57, 0x6F, 0x72, 0x6C, 0x64},StandardCharsets.UTF_8);
+
         Socket socketMock = mock(Socket.class);
-        InputStream inputStream = new ByteArrayInputStream(new byte[]{0x10});
-        OutputStream outputStream = new ByteArrayOutputStream();
-        when(socketMock.getInputStream()).thenReturn(inputStream);
-        when(socketMock.getOutputStream()).thenReturn(outputStream);
+        subscription.addToSubscription(topicHelloSlashWorldInBytes,socketMock);
 
-        assertTrue(packageReader.isValidConnection(socketMock));
+        Socket socketMockTwo = mock(Socket.class);
+        subscription.addToSubscription(topicWorldInBytes, socketMockTwo);
 
-        InputStream inp2 = new ByteArrayInputStream(new byte[]{(byte) 0x82, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2F, 0x77, 0x6F, 0x72, 0x6C, 0x64});
-        OutputStream out2 = new ByteArrayOutputStream();
-        when(socketMock.getInputStream()).thenReturn(inp2);
-        when(socketMock.getOutputStream()).thenReturn(out2);
+        Socket socketMockThree = mock(Socket.class);
+        subscription.addToSubscription(topicWorldInBytes, socketMockThree);
 
-        packageReader.isValidConnection(socketMock);
-        assertThat(subscription.getSubscriptions()).hasSize(1);
+        assertThat(subscription.getSubscriptions()).hasSize(2);
     }
+
 
     @Test
     @DisplayName("Return 2 when 2 different topics are added")
