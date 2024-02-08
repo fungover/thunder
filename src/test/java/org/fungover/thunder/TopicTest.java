@@ -85,7 +85,7 @@ public class TopicTest{
         IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/#/temperature"));
         IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/groundfloor/#/kitchen/#"));
 
-        assertThat(exception1).hasMessage("Invalid topic: Multi-level wildcard (#) must be placed as the last character in the topic, preceded by a forward slash");
-        assertThat(exception2).hasMessage("Invalid topic: Multi-level wildcard (#) must be placed as the last character in the topic, preceded by a forward slash");
+        assertThat(exception1).hasMessage("Invalid topic: Topic name does not follow MQTT topic naming conventions");
+        assertThat(exception2).hasMessage("Invalid topic: Topic name does not follow MQTT topic naming conventions");
     }
 }

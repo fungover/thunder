@@ -15,22 +15,33 @@ public record Topic(String name) {
         if (topicName.startsWith("/"))
             throw new IllegalArgumentException("Invalid topic: Can not begin with '/'");
 
-        if (topicName.contains("#")) {
-            int count = countAmountOfMultiLevelWildcard(topicName);
-            if (count == 1 && !topicName.endsWith("/#") || count > 1)
-                throw new IllegalArgumentException("Invalid topic: Multi-level wildcard (#) must be placed as the last character in the topic, preceded by a forward slash");
-        }
+        if (!isAValidTopicName(topicName))
+            throw new IllegalArgumentException("Invalid topic: Topic name does not follow MQTT topic naming conventions");
     }
 
-    // Checks how many '#' there is in topic
-    public static int countAmountOfMultiLevelWildcard(String topicName) {
-        int count = 0;
-        for (int i = 0; i < topicName.length(); i++) {
-            if (topicName.charAt(i) == '#') {
-                count++;
+    //checks a created topic name if its valid
+    public static boolean isAValidTopicName(String topicName) {
+        long count = 0L;
+        int numInPart = 0;
+
+        if (topicName.contains("#")) {
+            count = topicName
+                .chars()
+                .filter(c -> c == '#')
+                .count();
+        }
+
+        String[] parts = topicName.split("/");
+
+        for (String part : parts) {
+            numInPart = part.length();
+            //check every part for invalid wildcards and if it's empty
+            if (part.isEmpty() || (numInPart > 1 && part.contains("+")) || (((count == 1) && !topicName.endsWith("/#")) || (count > 1))) {
+                return false;
             }
         }
-        return count;
+
+        return true;
     }
 
     // check two topic names to match wildcard
