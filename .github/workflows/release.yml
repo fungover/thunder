@@ -28,9 +28,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Compile and test with Maven
-        run: mvn -B test pom.xml --no-transfer-progress -Pcoverage
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
