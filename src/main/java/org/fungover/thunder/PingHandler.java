@@ -4,34 +4,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class PingHandler {
+    private static final Logger logger = Logger.getLogger(PingHandler.class.getName());
 
-    public PingHandler() {
+    private PingHandler() {
+    }
+    public static boolean isPingRequest( Socket clientSocket) throws IOException {
+        InputStream inputStream = clientSocket.getInputStream();
+        byte[] buffer = new byte[1024];
+        int bytesRead = inputStream.read(buffer);
+        return bytesRead > 0 && buffer[0] == (byte) 0xC0;
     }
 
-    public void handlePing(Socket socket) throws IOException {
-
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
+    public static Boolean sendPingResponse(Socket clientSocket) throws IOException {
         try {
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
-
-            byte[] buffer = new byte[1024];
-            int bytesRead = inputStream.read(buffer);
-
-            System.out.println("Bytes read: " + bytesRead);
-            System.out.printf("First byte: 0x%02X\n", buffer[0]);
-            if (bytesRead > 0 && buffer[0] == (byte) 0xC0) {
-                System.out.println("Received MQTT PINGREQ message from client");
-                byte[] pingrespMessage = new byte[]{(byte) 0xD0, (byte) 0x00};
-                outputStream.write(pingrespMessage);
-                outputStream.flush();
-                System.out.println("Sent MQTT PINGRESP message to client");
-            }
+            OutputStream outputStream = clientSocket.getOutputStream();
+            byte[] pingrespMessage = new byte[]{(byte) 0xD0, (byte) 0x00};
+            outputStream.write(pingrespMessage);
+            outputStream.flush();
+            logger.info("Sent MQTT PINGRESP message to client");
+            return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.severe("Error sending MQTT PINGRESP message to client: " + e.getMessage());
+            return false;
         }
     }
 }
