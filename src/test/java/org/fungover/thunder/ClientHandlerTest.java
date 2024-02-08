@@ -8,9 +8,9 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ClientHandlerTest {
     ClientHandler clientHandler;
@@ -23,19 +23,20 @@ class ClientHandlerTest {
     }
 
     @Test
-    @DisplayName("Return 1 if valid client is added")
-    void return1IfValidClientIsAdded() throws IOException {
+    @DisplayName("Return 0 if valid client is added and then disconnected")
+    void return0IfValidClientIsAddedAndThenDisconnected() throws IOException {
         Socket socketMock = mock(Socket.class);
         InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", 1883);
         when(socketMock.getInetAddress()).thenReturn(inetSocketAddress.getAddress());
-        InputStream in = new ByteArrayInputStream(new byte[]{0x10});
+        InputStream connectPacket = new ByteArrayInputStream(new byte[]{0x10});
+        InputStream disconnectPacket = new ByteArrayInputStream(new byte[]{(byte) 0xE0});
         OutputStream out = new ByteArrayOutputStream();
         when(socketMock.getOutputStream()).thenReturn(out);
-        when(socketMock.getInputStream()).thenReturn(in);
-        when(packageReader.isValidConnection(socketMock)).thenReturn(true);
+        when(socketMock.getInputStream()).thenReturn(connectPacket,disconnectPacket);
+
         clientHandler.handleConnection(socketMock);
 
-        assertEquals(1,clientHandler.getClients().size());
+        assertEquals(0,clientHandler.getClients().size());
     }
     
     @Test
@@ -45,10 +46,8 @@ class ClientHandlerTest {
         InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", 1883);
         when(socketMock.getInetAddress()).thenReturn(inetSocketAddress.getAddress());
         InputStream in = new ByteArrayInputStream(new byte[]{0x20});
-        OutputStream out = new ByteArrayOutputStream();
-        when(socketMock.getOutputStream()).thenReturn(out);
         when(socketMock.getInputStream()).thenReturn(in);
-        when(packageReader.isValidConnection(socketMock)).thenReturn(true);
+
         clientHandler.handleConnection(socketMock);
 
         assertEquals(0,clientHandler.getClients().size());
