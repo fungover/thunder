@@ -39,5 +39,33 @@ class ClientTest {
         assertFalse(client.isConnected());
     }
 
+    @Test
+    void givenClientIsNotConnectedThenSubscribeShouldResultInNoInteractionWithTopicManager() {
+        assertFalse(client.isConnected());
+        client.subscribe("topic1");
+        Mockito.verifyNoInteractions(topicManager);
+    }
+
+    @Test
+    void givenClientIsConnectedThenSubscribeWithParameterTopic1ShouldResultInSubscribedTopicsContainingTopic1() {
+        client.connect();
+        client.subscribe("topic1");
+        assertTrue(client.getSubscribedTopics().contains("topic1"));
+    }
+
+    @Test
+    void givenClientIsNotConnectedThenUnsubscribeShouldResultInNoInteractionWithTopicManager() {
+        assertFalse(client.isConnected());
+        client.unsubscribe("topic1");
+        Mockito.verifyNoInteractions(topicManager);
+    }
+
+    @Test
+    void givenClientIsConnectedThenUnsubscribeWithParameterTopic1ShouldResultInSubscribedTopicsNotContainingTopic1() {
+        client.connect();
+        client.subscribe("topic1");
+        client.unsubscribe("topic1");
+        assertFalse(client.getSubscribedTopics().contains("topic1"));
+    }
 
 }

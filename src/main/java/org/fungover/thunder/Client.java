@@ -9,9 +9,9 @@ public class Client {
     private boolean connected;
     private Set<String> subscribedTopics;
 
-    public Client(String clientId, TopicHandler topicManager) {
+    public Client(String clientId, TopicHandler topicHandler) {
         this.clientId = clientId;
-        this.topicHandler = topicManager;
+        this.topicHandler = topicHandler;
         this.connected = false;
         this.subscribedTopics = new HashSet<>();
     }
@@ -56,4 +56,5 @@ public class Client {
             subscribedTopics.remove(topic);
         }
     }
+
 }
