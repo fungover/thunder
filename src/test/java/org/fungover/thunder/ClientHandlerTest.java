@@ -34,13 +34,11 @@ class ClientHandlerTest {
         when(socketMock.getInputStream()).thenReturn(in);
         when(packageReader.isValidConnection(socketMock)).thenReturn(true);
         clientHandler.handleConnection(socketMock);
-
         assertEquals(1,clientHandler.getClients().size());
     }
-
     @Test
     @DisplayName("Return 0 if not valid client connects")
-    void return0IfNotValitClientConnects() throws IOException {
+    void return0IfNotValidClientConnects() throws IOException {
         Socket socketMock = mock(Socket.class);
         InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", 1883);
         when(socketMock.getInetAddress()).thenReturn(inetSocketAddress.getAddress());

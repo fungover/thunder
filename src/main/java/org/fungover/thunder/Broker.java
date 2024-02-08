@@ -13,7 +13,6 @@ public class Broker {
         this.serverSocket = serverSocket;
     }
 
-
     public void start() throws IOException {
         System.out.println("Server started on port 1883");
         try {
