@@ -7,9 +7,9 @@ public class Broker {
 
     private final ServerSocket serverSocket;
     private final ClientHandler clientHandler;
-    public Broker() throws IOException {
-        this.clientHandler = new ClientHandler();
-        this.serverSocket = new ServerSocket(1883);
+    public Broker(ClientHandler clientHandler, ServerSocket serverSocket) {
+        this.clientHandler = clientHandler;
+        this.serverSocket = serverSocket;
     }
 
     public void start() {

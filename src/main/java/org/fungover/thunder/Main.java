@@ -1,17 +1,19 @@
 package org.fungover.thunder;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Main {
 
     public static void main(String[] args){
-        Broker server = null;
+        Broker broker = null;
         try {
-            server = new Broker();
+            ServerSocket serverSocket = new ServerSocket(1883);
+            ClientHandler clientHandler = new ClientHandler();
+            broker = new Broker(clientHandler, serverSocket);
         }  catch (IOException e) {
-            e.printStackTrace();
         }
-        if (server != null)
-            server.start();
+        if (broker != null)
+            broker.start();
     }
 }
