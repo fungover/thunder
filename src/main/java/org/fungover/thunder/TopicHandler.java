@@ -13,6 +13,10 @@ public class TopicHandler {
         this.subscriptions = new HashMap<>();
     }
 
+    public Map<String, Set<Client>> getSubscriptions() {
+        return subscriptions;
+    }
+
     public void subscribe(Client client, String topic) {
         subscriptions.computeIfAbsent(topic, k -> new HashSet<>()).add(client);
         System.out.println("Client " + client.getClientId() + " subscribed to topic: " + topic);
