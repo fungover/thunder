@@ -97,4 +97,14 @@ class TopicTest {
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor")).isFalse();
     }
 
+    @Test
+    @DisplayName("creating a special character '$' topic should throw exception")
+    void creatingASpecialCharacterTopicShouldThrowException() {
+        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("$SYS"));
+        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myHome/groundfloor/kitchen/fridge/$ensor"));
+
+        assertThat(exception1).hasMessage("Invalid topic: Can not contain '$'");
+        assertThat(exception2).hasMessage("Invalid topic: Can not contain '$'");
+    }
+
 }

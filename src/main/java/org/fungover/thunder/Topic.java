@@ -15,6 +15,9 @@ public record Topic(String name) {
         if (topicName.startsWith("/"))
             throw new IllegalArgumentException("Invalid topic: Can not begin with '/'");
 
+        if (topicName.contains("$"))
+            throw new IllegalArgumentException("Invalid topic: Can not contain '$'");
+
         if (!isAValidTopicName(topicName))
             throw new IllegalArgumentException("Invalid topic: Topic name does not follow MQTT topic naming conventions");
     }
