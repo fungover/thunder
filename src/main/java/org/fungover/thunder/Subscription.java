@@ -21,10 +21,9 @@ public class Subscription {
     public boolean addToSubscription(String topicFilter, Socket socket) {
         List<Socket> sockets = new ArrayList<>();
         if (subscriptions.containsKey(topicFilter)) {
-            var list = subscriptions.get(topicFilter);
-            list.add(socket);
+            subscriptions.get(topicFilter).add(socket);
             return true;
-        } else if(!subscriptions.containsKey(topicFilter)){
+        } else if (!subscriptions.containsKey(topicFilter)) {
             sockets.add(socket);
             Topic topic = new Topic(topicFilter);
             subscriptions.put(topic.getName(), sockets);
