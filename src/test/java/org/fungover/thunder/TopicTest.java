@@ -14,7 +14,7 @@ class TopicTest {
         Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature");
         Topic topic2 = Topic.create("myhome/first_floor/kitchen/temperature");
 
-        assertThat(topic1.equals(topic2)).isTrue();
+        assertThat(topic1).isEqualTo(topic2);
     }
 
     @Test
@@ -23,7 +23,7 @@ class TopicTest {
         Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature");
         Topic topic2 = Topic.create("myhome/first_floor/kitchen/");
 
-        assertThat(topic1.equals(topic2)).isFalse();
+        assertThat(topic1).isNotEqualTo(topic2);
     }
 
     @Test
@@ -88,4 +88,13 @@ class TopicTest {
         assertThat(exception1).hasMessage("Invalid topic: Topic name does not follow MQTT topic naming conventions");
         assertThat(exception2).hasMessage("Invalid topic: Topic name does not follow MQTT topic naming conventions");
     }
+
+    @Test
+    @DisplayName("No match when levels differ")
+    void noMatchWhenWildcardTopicLevelsDiffer() {
+        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
+
+        assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor")).isFalse();
+    }
+
 }
