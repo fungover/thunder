@@ -69,4 +69,8 @@ public record Topic(String name) {
         return !(name.startsWith("$") || name.endsWith("/#") || name.contains("/+"));
     }
 
+    public boolean isValidForSubscription() {
+        return !name.startsWith("$") || !name.endsWith("/#");
+    }
+
 }

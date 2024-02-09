@@ -137,4 +137,35 @@ class TopicTest {
         assertThat(internalTopic2.isValidForPublishing()).isFalse();
     }
 
+    @Test
+    @DisplayName("Valid topics for subscription")
+    void topicValidForSubscription() {
+        Topic wildcardTopic1 = Topic.create("myHome/+/kitchen/#");
+        Topic wildcardTopic2 = Topic.create("myHome/groundfloor/+");
+        Topic wildcardTopic3 = Topic.create("myHome/groundfloor/#");
+        Topic wildcardTopic4 = Topic.create("myHome/groundfloor/kitchen/temp");
+
+
+        assertThat(wildcardTopic1.isValidForSubscription()).isTrue();
+        assertThat(wildcardTopic2.isValidForSubscription()).isTrue();
+        assertThat(wildcardTopic3.isValidForSubscription()).isTrue();
+        assertThat(wildcardTopic4.isValidForSubscription()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Valid internal topic for subscription")
+    void validInternalTopicForSubscription() {
+        Topic internalTopic = new Topic("$SYS");
+
+        assertThat(internalTopic.isValidForSubscription()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Not valid internal topic for subscription")
+    void notValidInternalTopicForSubscription() {
+        Topic internalTopic = new Topic("$SYS/#");
+
+        assertThat(internalTopic.isValidForSubscription()).isFalse();
+    }
+
 }
