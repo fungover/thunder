@@ -1,4 +1,4 @@
-name: Release CI Pipilne
+name: Release CI Pipeline
 
 on:
   release:
