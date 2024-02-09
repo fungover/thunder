@@ -1,0 +1,37 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'bug'
+      - 'critical bug'
+
+autolabeler:
+  - label: 'bug'
+    branch:
+      - '/bug-.+'
+  - label: 'feature'
+    branch:
+      - '/feature-.+'
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+  default: patch
+
+template: |
+  $CHANGES
+
+
+change-template: '- $TITLE (#$NUMBER)'
