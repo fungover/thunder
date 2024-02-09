@@ -25,10 +25,17 @@ public class ClientHandler {
                 clientSocket.close();
             }
             while (!clientSocket.isClosed()) {
-                //Logic to read from or disconnect client.
-                break;
+                //Read from inputstream into bytebuffer
+
+                if (PingHandler.isPingRequest(clientSocket)) {
+                    System.out.println("Received MQTT PINGREQ message from client");
+                    if(!PingHandler.sendPingResponse(clientSocket))
+                        clientSocket.close();
+                } else {
+                    // Handle other types of messages
+                }
             }
-            removeDisconnectedClients();
+                removeDisconnectedClients();
         } catch (Exception e) {
             e.printStackTrace();
         }
