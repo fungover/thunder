@@ -28,6 +28,7 @@ public class ClientHandler {
             }
             while (!isClientSocketClosed) {
                 isClientSocketClosed = packageReader.readFromClient(clientSocket);
+                break; // Break is used for tests since mocked sockets ends up in infinity-land
             }
             closeClientSocket(clientSocket);
             removeDisconnectedClients();
