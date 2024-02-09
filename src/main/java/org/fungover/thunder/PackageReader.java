@@ -57,7 +57,8 @@ public class PackageReader {
         }
 
         if (buffer[0] == (byte) 0x82) {
-            subscription.read(bytesRead, buffer, clientSocket);
+           subscription.read(bytesRead, buffer, clientSocket);
+
             sendSubackToClient(outputStream);
         }
 
@@ -70,10 +71,9 @@ public class PackageReader {
         outputStream.flush();
     }
 
-    private void sendSubackToClient(OutputStream outputStream) throws IOException {
-        byte[] connackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
-        outputStream.write(connackMessage);
+    private static void sendSubackToClient(OutputStream outputStream) throws IOException {
+        byte[] subackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
+        outputStream.write(subackMessage);
         outputStream.flush();
     }
-
 }
