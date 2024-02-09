@@ -14,7 +14,10 @@ public class Subscription {
     public void read(int length, byte[] buffer, Socket socket) {
         byte[] copy = Arrays.copyOfRange(buffer, 1, length);
         String byteToTopicString = new String(copy, StandardCharsets.UTF_8);
-        addToSubscription(byteToTopicString, socket);
+
+        if (buffer[0] == (byte) 0x82)
+            addToSubscription(byteToTopicString, socket);
+
         getSubscriptions();
     }
 
@@ -46,5 +49,4 @@ public class Subscription {
         }
         return subscriptions;
     }
-
 }
