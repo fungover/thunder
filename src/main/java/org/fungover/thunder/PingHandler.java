@@ -11,16 +11,13 @@ public class PingHandler {
 
     private PingHandler() {
     }
-    public static boolean isPingRequest( Socket clientSocket) throws IOException {
-        InputStream inputStream = clientSocket.getInputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead = inputStream.read(buffer);
+    public static boolean isPingRequest( byte[] buffer, int bytesRead) throws IOException {
         return bytesRead > 0 && buffer[0] == (byte) 0xC0;
     }
 
-    public static Boolean sendPingResponse(Socket clientSocket) throws IOException {
+    public static Boolean sendPingResponse( OutputStream outputStream) throws IOException {
         try {
-            OutputStream outputStream = clientSocket.getOutputStream();
+
             byte[] pingrespMessage = new byte[]{(byte) 0xD0, (byte) 0x00};
             outputStream.write(pingrespMessage);
             outputStream.flush();

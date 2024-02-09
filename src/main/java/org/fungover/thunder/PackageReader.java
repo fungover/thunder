@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PackageReader {
-    private final Map<InetAddress, Boolean> connectPackageSent = new HashMap<>();
+    public final Map<InetAddress, Boolean> connectPackageSent = new HashMap<>();
     private static final int CONNECTION_TIMEOUT = 30000;
 
     public boolean isValidConnection(Socket socket) throws IOException {
@@ -53,16 +53,12 @@ public class PackageReader {
         return bytesRead > 0 && buffer[0] == (byte) 0xE0;
     }
 
-    public boolean isCleanDisconnect(Socket socket) throws IOException {
-        InetAddress client = socket.getInetAddress();
+    public boolean isCleanDisconnect(InetAddress client, byte[] buffer, int bytesRead) throws IOException {
 
         if (isClientConnected(client)){
             return false;
         }
 
-        InputStream inputStream = socket.getInputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead = inputStream.read(buffer);
 
         if (isDisconnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT DISCONNECT message from client");
