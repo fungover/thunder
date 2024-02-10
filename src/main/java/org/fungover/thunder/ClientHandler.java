@@ -24,9 +24,12 @@ public class ClientHandler {
             } else {
                 clientSocket.close();
             }
-            while (!clientSocket.isClosed()) {
-                //Logic to read from or disconnect client.
-                break;
+            while (clients.contains(clientSocket)) {
+                if (packageReader.isCleanDisconnect(clientSocket)){
+                    clientSocket.close();
+                    clients.remove(clientSocket);
+                    break;
+                }
             }
             removeDisconnectedClients();
         } catch (IOException e) {
