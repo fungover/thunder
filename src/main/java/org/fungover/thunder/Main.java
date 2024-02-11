@@ -9,10 +9,6 @@ public class Main {
         ServerSocket serverSocket = new ServerSocket(1883);
         ClientHandler clientHandler = new ClientHandler();
         Broker broker = new Broker(clientHandler, serverSocket);
-        createAndStartBroker(broker);
-    }
-
-    public static void createAndStartBroker(Broker broker) throws IOException {
         broker.start();
     }
 
