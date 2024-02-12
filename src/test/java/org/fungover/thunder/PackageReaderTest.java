@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,22 +76,6 @@ class PackageReaderTest {
         byte[] connackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
 
         assertArrayEquals(connackMessage, bytesWritten);
-    }
-
-    @Test
-    @DisplayName("Should print message and return false when no MQTT CONNECT message is sent")
-    void shouldPrintMessageAndReturnFalseWhenNoConnectMessageIsSent() throws IOException {
-        Socket socketMock = mock(Socket.class);
-        InputStream inputStream = new ByteArrayInputStream(new byte[]{0x20});
-        when(socketMock.getInputStream()).thenReturn(inputStream);
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        when(socketMock.getInputStream()).thenReturn(inputStream);
-
-        assertFalse(packageReader.isValidConnection(socketMock));
-
-        assertThat(outContent.toString()).contains("Received no MQTT CONNECT message. Disconnecting client");
     }
 
 

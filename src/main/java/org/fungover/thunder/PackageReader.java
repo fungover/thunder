@@ -7,10 +7,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class PackageReader {
     private final Map<InetAddress, Boolean> connectPackageSent = new HashMap<>();
     private static final int CONNECTION_TIMEOUT = 30000;
+    private static final Logger logger = Logger.getLogger(PackageReader.class.getName());
 
     public boolean isValidConnection(Socket socket) throws IOException {
         InetAddress client = socket.getInetAddress();
@@ -30,7 +32,7 @@ public class PackageReader {
             System.out.println("Sent MQTT CONNACK message to client");
             return true;
         }
-        System.out.println("Received no MQTT CONNECT message. Disconnecting client " + client);
+        logger.info("Received no MQTT CONNECT message. Disconnecting client " + client);
         return false;
     }
 
