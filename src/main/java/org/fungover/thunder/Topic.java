@@ -1,11 +1,17 @@
 package org.fungover.thunder;
 
-public record Topic(String name) {
+public record Topic(String name, int qos) {
 
-
-    public static Topic create(String topicName) {
+    public static Topic create(String topicName, int qos) {
+        checkQosLevel(qos);
         checkTopicNamingValidation(topicName);
-        return new Topic(topicName);
+        return new Topic(topicName, qos);
+    }
+
+    private static void checkQosLevel(int qos) {
+        if (qos < 0 || qos > 2) {
+            throw new IllegalArgumentException("QoS level cannot be less than 0 or more than 2");
+        }
     }
 
     private static void checkTopicNamingValidation(String topicName) {
@@ -73,4 +79,8 @@ public record Topic(String name) {
         return !name.startsWith("$") || !name.endsWith("/#");
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
