@@ -90,6 +90,7 @@ class PackageReaderTest {
         assertThat(outContent.toString()).contains("Received no MQTT CONNECT message. Disconnecting client");
     }
 
+
     @Test
     @DisplayName("Socket receive no response if no valid connect message is sent")
     void socketReceiveNoResponseIfNoValidConnectMessageIsSent() throws IOException {

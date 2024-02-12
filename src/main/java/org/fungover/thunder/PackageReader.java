@@ -17,7 +17,6 @@ public class PackageReader {
         byte[] buffer = new byte[1024];
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
-
         if (isDoubleConnectMessage(client, buffer)) {
             return false;
         }
