@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,9 +63,18 @@ public class PackageReader {
 
         InputStream inputStream = socket.getInputStream();
         byte[] buffer = new byte[1024];
-        int bytesRead = inputStream.read(buffer);
+        int bytesRead = -1;
 
-        if (isDisconnectPackage(bytesRead, buffer)) {
+        try {
+            socket.setSoTimeout(CONNECTION_TIMEOUT);
+            bytesRead = inputStream.read(buffer);
+        } catch (SocketTimeoutException e) {
+            System.err.println("Socket read timed out.");
+        } finally {
+            socket.setSoTimeout(0);
+        }
+
+        if (bytesRead > 0 && isDisconnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT DISCONNECT message from client");
             connectPackageSent.remove(client);
             return true;
