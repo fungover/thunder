@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,21 +17,21 @@ public class PackageReader {
         byte[] buffer = new byte[1024];
         InputStream inputStream = socket.getInputStream();
         OutputStream outputStream = socket.getOutputStream();
-        int bytesRead = inputStream.read(buffer);
 
         if (isDoubleConnectMessage(client, buffer)) {
             return false;
         }
-
         socket.setSoTimeout(CONNECTION_TIMEOUT);
-
+        int bytesRead = inputStream.read(buffer);
         if (isConnectPackage(bytesRead, buffer)) {
+            socket.setSoTimeout(0);
             System.out.println("Received MQTT CONNECT message from client");
             connectPackageSent.put(socket.getInetAddress(), true);
             sendConnackToClient(outputStream);
             System.out.println("Sent MQTT CONNACK message to client");
             return true;
         }
+        System.out.println("Received no MQTT CONNECT message. Disconnecting client " + client);
         return false;
     }
 
@@ -63,18 +62,9 @@ public class PackageReader {
 
         InputStream inputStream = socket.getInputStream();
         byte[] buffer = new byte[1024];
-        int bytesRead = -1;
+        int bytesRead = inputStream.read(buffer);
 
-        try {
-            socket.setSoTimeout(CONNECTION_TIMEOUT);
-            bytesRead = inputStream.read(buffer);
-        } catch (SocketTimeoutException e) {
-            System.err.println("Socket read timed out.");
-        } finally {
-            socket.setSoTimeout(0);
-        }
-
-        if (bytesRead > 0 && isDisconnectPackage(bytesRead, buffer)) {
+        if (isDisconnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT DISCONNECT message from client");
             connectPackageSent.remove(client);
             return true;
