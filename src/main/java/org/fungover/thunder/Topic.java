@@ -2,7 +2,6 @@ package org.fungover.thunder;
 
 public record Topic(String name) {
 
-
     public static Topic create(String topicName) {
         checkTopicNamingValidation(topicName);
         return new Topic(topicName);
@@ -12,11 +11,9 @@ public record Topic(String name) {
         if (topicName == null || topicName.isEmpty())
             throw new IllegalArgumentException("Invalid topic: Should contain at least one character");
 
-        if (topicName.startsWith("/"))
-            throw new IllegalArgumentException("Invalid topic: Can not begin with '/'");
+        if (topicName.startsWith("/")) throw new IllegalArgumentException("Invalid topic: Can not begin with '/'");
 
-        if (topicName.contains("$"))
-            throw new IllegalArgumentException("Invalid topic: Can not contain '$'");
+        if (topicName.contains("$")) throw new IllegalArgumentException("Invalid topic: Can not contain '$'");
 
         if (!isAValidTopicName(topicName))
             throw new IllegalArgumentException("Invalid topic: Topic name does not follow MQTT topic naming conventions");
@@ -28,10 +25,7 @@ public record Topic(String name) {
         int numInPart = 0;
 
         if (topicName.contains("#")) {
-            count = topicName
-                .chars()
-                .filter(c -> c == '#')
-                .count();
+            count = topicName.chars().filter(c -> c == '#').count();
         }
 
         String[] parts = topicName.split("/");
@@ -72,5 +66,4 @@ public record Topic(String name) {
     public boolean isValidForSubscription() {
         return !name.startsWith("$") || !name.endsWith("/#");
     }
-
 }
