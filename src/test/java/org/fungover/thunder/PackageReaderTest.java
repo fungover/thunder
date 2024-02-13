@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,10 +17,13 @@ import static org.mockito.Mockito.*;
 
 class PackageReaderTest {
     PackageReader packageReader;
+    private final PrintStream originalOut = System.out;
+    private final ByteArrayOutputStream mockOut = new ByteArrayOutputStream();
 
     @BeforeEach
     void setUp() {
         packageReader = new PackageReader();
+        System.setOut(new PrintStream(mockOut));
     }
 
     @Test
