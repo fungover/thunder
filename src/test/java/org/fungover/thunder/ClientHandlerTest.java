@@ -11,16 +11,16 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ClientHandlerTest {
     ClientHandler clientHandler;
     PackageReader packageReader;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         clientHandler = new ClientHandler();
         packageReader = mock(PackageReader.class);
     }
@@ -35,13 +35,13 @@ class ClientHandlerTest {
         InputStream disconnectPacket = new ByteArrayInputStream(new byte[]{(byte) 0xE0});
         OutputStream out = new ByteArrayOutputStream();
         when(socketMock.getOutputStream()).thenReturn(out);
-        when(socketMock.getInputStream()).thenReturn(connectPacket,disconnectPacket);
+        when(socketMock.getInputStream()).thenReturn(connectPacket, disconnectPacket);
 
         clientHandler.handleConnection(socketMock);
 
-        assertEquals(0,clientHandler.getClients().size());
+        assertEquals(0, clientHandler.getClients().size());
     }
-    
+
     @Test
     @DisplayName("Return 0 if not valid client connects")
     void return0IfNotValidClientConnects() throws IOException {
@@ -53,7 +53,7 @@ class ClientHandlerTest {
 
         clientHandler.handleConnection(socketMock);
 
-        assertEquals(0,clientHandler.getClients().size());
+        assertEquals(0, clientHandler.getClients().size());
     }
 
     @Test
