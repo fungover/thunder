@@ -72,7 +72,6 @@ class PackageReaderTest {
         assertArrayEquals(connackMessage, bytesWritten);
     }
 
-
     @Test
     @DisplayName("Socket receive no response if no valid connect message is sent")
     void socketReceiveNoResponseIfNoValidConnectMessageIsSent() throws IOException {
@@ -87,7 +86,7 @@ class PackageReaderTest {
     }
     @Test
     @DisplayName("Should return false if double connect message is received")
-    void shouldReturnFalsseIfDoubleConnectMessageIsReceived() throws IOException {
+    void shouldReturnFalseIfDoubleConnectMessageIsReceived() throws IOException {
         Socket socketMock = mock(Socket.class);
         InputStream inputStream = new ByteArrayInputStream(new byte[]{0x10, 0x01, 0x00});
         OutputStream outputStream = new ByteArrayOutputStream();
@@ -111,7 +110,6 @@ class PackageReaderTest {
         when(socketMock.getOutputStream()).thenReturn(outputStream);
         assertFalse(packageReader.isCleanDisconnect(address, new byte[]{(byte) 0xE0}, 1));
     }
-
 
     @Test
     @DisplayName("Should return false if double connect message is received")
