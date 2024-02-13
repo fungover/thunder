@@ -9,7 +9,7 @@ public class Main {
         ServerSocket serverSocket = new ServerSocket(1883);
         ClientHandler clientHandler = new ClientHandler();
         Broker broker = new Broker(clientHandler, serverSocket);
-        broker.start();
+        broker.start()
     }
 
 }

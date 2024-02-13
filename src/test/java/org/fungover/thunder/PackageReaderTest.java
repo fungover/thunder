@@ -9,14 +9,18 @@ import java.net.Socket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class PackageReaderTest {
+    private final PrintStream originalOut = System.out;
+    private final ByteArrayOutputStream mockOut = new ByteArrayOutputStream();
     PackageReader packageReader;
 
     @BeforeEach
     void setUp() {
         packageReader = new PackageReader();
+        System.setOut(new PrintStream(mockOut));
     }
 
     @Test
@@ -84,25 +88,28 @@ class PackageReaderTest {
 
         assertEquals(0, bytesWritten.length);
     }
+
     @Test
     @DisplayName("Should return true when client send disconnect package")
-    void shouldReturnTrueWhenClientSendDisconnectPackage() throws IOException{
+    void shouldReturnTrueWhenClientSendDisconnectPackage() throws IOException {
         Socket socketMock = mock(Socket.class);
         setUpConnection(socketMock);
-        InputStream inputStream = new ByteArrayInputStream(new byte[]{(byte) 0xE0,0x00});
+        InputStream inputStream = new ByteArrayInputStream(new byte[]{(byte) 0xE0, 0x00});
         when(socketMock.getInputStream()).thenReturn(inputStream);
 
         assertThat(packageReader.isCleanDisconnect(socketMock)).isTrue();
     }
+
     @Test
     @DisplayName("Should return false if there was no connection prior to disconnect")
     void shouldReturnFalseIfThereWasNoConnectionPriorToDisconnect() throws IOException {
         Socket socketMock = mock(Socket.class);
-        InputStream inputStream = new ByteArrayInputStream(new byte[]{(byte) 0xE0,0x00});
+        InputStream inputStream = new ByteArrayInputStream(new byte[]{(byte) 0xE0, 0x00});
         when(socketMock.getInputStream()).thenReturn(inputStream);
 
         assertThat(packageReader.isCleanDisconnect(socketMock)).isFalse();
     }
+
     @Test
     @DisplayName("Should return false if isCleanDisconnect() is called without disconnectPackage")
     void shouldReturnFalseIfIsCleanDisconnectIsCalledWithoutDisconnectPackage() throws IOException {
@@ -111,6 +118,7 @@ class PackageReaderTest {
 
         assertThat(packageReader.isCleanDisconnect(socketMock)).isFalse();
     }
+
     void setUpConnection(Socket socketMock) throws IOException {
         InputStream inputStream = new ByteArrayInputStream(new byte[]{0x10, 0x01, 0x00});
         OutputStream outputStream = new ByteArrayOutputStream();
