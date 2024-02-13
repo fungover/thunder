@@ -65,16 +65,19 @@ public class PackageReader {
         return false;
     }
 
-    private static void sendConnackToClient(OutputStream outputStream) throws IOException {
-        byte[] connackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
-        outputStream.write(connackMessage);
+    private static void sendMessageToClient(OutputStream outputStream, byte[] message) throws IOException {
+        outputStream.write(message);
         outputStream.flush();
     }
 
+    private static void sendConnackToClient(OutputStream outputStream) throws IOException {
+        byte[] connackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
+        sendMessageToClient(outputStream, connackMessage);
+    }
+
     private static void sendSubackToClient(OutputStream outputStream) throws IOException {
-        byte[] subackMessage = new byte[]{(byte) 0x20, (byte) 0x02, (byte) 0x00, (byte) 0x00};
-        outputStream.write(subackMessage);
-        outputStream.flush();
+        byte[] subackMessage = new byte[]{(byte) 0x90, (byte) 0x02, (byte) 0x00, (byte) 0x00};
+        sendMessageToClient(outputStream, subackMessage);
     }
 
     private static boolean isDisconnectPackage(int bytesRead, byte[] buffer){
