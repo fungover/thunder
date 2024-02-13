@@ -5,48 +5,37 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Subscription {
-    private Map<String, List<Socket>> subscriptions;
+    private final Map<Topic, List<Socket>> subscriptions;
 
     Subscription() {
         this.subscriptions = new HashMap<>();
     }
 
     public void read(int length, byte[] buffer, Socket socket) {
-        byte[] copy = Arrays.copyOfRange(buffer, 1, length);
-        String byteToTopicString = new String(copy, StandardCharsets.UTF_8);
+        byte[] copy = Arrays.copyOfRange(buffer, 1, length-2);
 
-        if (buffer[0] == (byte) 0x82)
-            addToSubscription(byteToTopicString, socket);
+        //todo första 2 bytes är length, sedan kommer topic filter, efter det kommer qos level. byte[] {längd1,längd2,topic filter....QoS level}
 
-        getSubscriptions();
-    }
+        if (buffer[0] == (byte) 0x82) {
+            List<Topic> matchingTopics = new ArrayList<>();
+            Topic topic = Topic.create(new String(copy, StandardCharsets.UTF_8), buffer[length-1]);
 
-    public boolean addToSubscription(String topicFilter, Socket socket) {
-        List<Socket> sockets = new ArrayList<>();
-        if (subscriptions.containsKey(topicFilter)) {
-            subscriptions.get(topicFilter).add(socket);
-            return true;
-        } else if (!subscriptions.containsKey(topicFilter)) {
-            sockets.add(socket);
-            Topic topic = new Topic(topicFilter);
-            subscriptions.put(topic.getName(), sockets);
-            return true;
-        }
-        return false;
-    }
+            subscriptions.forEach((topicName, socketList) -> {
+                if (topic.matchesWildcard(topic.name())) {
+                    socketList.add(socket);
+                    matchingTopics.add(topicName);
+                }
+            });
 
-    public Map<String, List<Socket>> getSubscriptions() {
-        for (Map.Entry<String, List<Socket>> entry : subscriptions.entrySet()) {
-            String topic = entry.getKey();
-            List<Socket> sockets = entry.getValue();
-
-            System.out.println("Topic: " + topic);
-            System.out.println("Sockets subscribing on topic:");
-            for (Socket socket : sockets) {
-                System.out.println(socket);
+            if (topic.isValidForSubscription() && matchingTopics.isEmpty()) {
+                List<Socket> sockets = new ArrayList<>();
+                sockets.add(socket);
+                subscriptions.put(topic, sockets);
             }
-            System.out.println("---------------------");
         }
+    }
+
+    public Map<Topic, List<Socket>> getSubscriptions() {
         return subscriptions;
     }
 }
