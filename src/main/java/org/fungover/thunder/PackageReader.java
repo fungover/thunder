@@ -45,6 +45,7 @@ public class PackageReader {
     }
 
     public boolean readFromClient(Socket clientSocket) throws IOException {
+
         byte[] buffer = new byte[1024];
         InputStream inputStream = clientSocket.getInputStream();
         OutputStream outputStream = clientSocket.getOutputStream();
@@ -53,16 +54,26 @@ public class PackageReader {
 
         if (buffer[0] == 0x10) {
             System.out.println("Sending connection package after connection is established is forbidden.");
-            return false;
+            return true;
         }
 
         if (buffer[0] == (byte) 0x82) {
-           subscription.read(bytesRead, buffer, clientSocket);
-
-            sendSubackToClient(outputStream);
+            subscription.read(bytesRead, buffer, clientSocket);
+            sendSubackToClient(outputStream, buffer, bytesRead);
+            return true;
         }
 
-        return false;
+        if (isClientConnected(clientSocket.getInetAddress())) {
+            return true;
+        }
+
+        if (isDisconnectPackage(bytesRead, buffer)) {
+            System.out.println("Received MQTT DISCONNECT message from client");
+            connectPackageSent.remove(clientSocket.getInetAddress());
+            return false;
+        }
+
+        return true;
     }
 
     private static void sendMessageToClient(OutputStream outputStream, byte[] message) throws IOException {
@@ -75,19 +86,26 @@ public class PackageReader {
         sendMessageToClient(outputStream, connackMessage);
     }
 
-    private static void sendSubackToClient(OutputStream outputStream) throws IOException {
-        byte[] subackMessage = new byte[]{(byte) 0x90, (byte) 0x02, (byte) 0x00, (byte) 0x00};
+    private static void sendSubackToClient(OutputStream outputStream, byte[] packet, int bytesRead) throws IOException {
+        byte[] subackMessage = new byte[]{
+            (byte) 0x90,  // Fixed Header for SUBACK message
+            (byte) 0x03,  // Remaining Length ,3 bytes for Packet Identifier and QoS level
+            packet[2],  // Packet Identifier MSB
+            packet[3],  // Packet Identifier LSB
+            packet[bytesRead - 1]   // Index of the QoS level of the subscription
+        };
+
         sendMessageToClient(outputStream, subackMessage);
     }
 
-    private static boolean isDisconnectPackage(int bytesRead, byte[] buffer){
+    private static boolean isDisconnectPackage(int bytesRead, byte[] buffer) {
         return bytesRead > 0 && buffer[0] == (byte) 0xE0;
     }
 
-    public boolean isCleanDisconnect(Socket socket) throws IOException {
+   /* public boolean isNotReadingFromClient(Socket socket) throws IOException {
         InetAddress client = socket.getInetAddress();
 
-        if (isClientConnected(client)){
+        if (isClientConnected(client)) {
             return false;
         }
 
@@ -99,9 +117,12 @@ public class PackageReader {
             System.out.println("Received MQTT DISCONNECT message from client");
             connectPackageSent.remove(client);
             return true;
-        }
+        } else
+
         return false;
     }
+
+    */
 
     private boolean isClientConnected(InetAddress client) {
         return !connectPackageSent.containsKey(client);
