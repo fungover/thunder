@@ -12,13 +12,11 @@ public class Subscription {
     }
 
     public void read(int length, byte[] buffer, Socket socket) {
-        byte[] copy = Arrays.copyOfRange(buffer, 1, length-2);
 
-        //todo första 2 bytes är length, sedan kommer topic filter, efter det kommer qos level. byte[] {längd1,längd2,topic filter....QoS level}
+        byte[] topicFilter  = Arrays.copyOfRange(buffer, 6, length-1);
 
-        if (buffer[0] == (byte) 0x82) {
             List<Topic> matchingTopics = new ArrayList<>();
-            Topic topic = Topic.create(new String(copy, StandardCharsets.UTF_8), buffer[length-1]);
+            Topic topic = Topic.create(new String(topicFilter, StandardCharsets.UTF_8), buffer[length-1]);
 
             subscriptions.forEach((topicName, socketList) -> {
                 if (topic.matchesWildcard(topic.name())) {
@@ -32,7 +30,6 @@ public class Subscription {
                 sockets.add(socket);
                 subscriptions.put(topic, sockets);
             }
-        }
     }
 
     public Map<Topic, List<Socket>> getSubscriptions() {
