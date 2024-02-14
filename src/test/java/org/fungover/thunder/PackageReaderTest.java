@@ -89,27 +89,26 @@ class PackageReaderTest {
     void shouldReturnTrueWhenClientSendDisconnectPackage() throws IOException{
         Socket socketMock = mock(Socket.class);
         setUpConnection(socketMock);
-        InputStream inputStream = new ByteArrayInputStream(new byte[]{(byte) 0xE0,0x00});
-        when(socketMock.getInputStream()).thenReturn(inputStream);
+        byte[] packet = new byte[] {(byte) 0xE0,0x00};
 
-        assertThat(packageReader.isCleanDisconnect(socketMock)).isTrue();
+        assertThat(packageReader.isCleanDisconnect(socketMock,packet,2)).isTrue();
     }
     @Test
     @DisplayName("Should return false if there was no connection prior to disconnect")
     void shouldReturnFalseIfThereWasNoConnectionPriorToDisconnect() throws IOException {
         Socket socketMock = mock(Socket.class);
-        InputStream inputStream = new ByteArrayInputStream(new byte[]{(byte) 0xE0,0x00});
-        when(socketMock.getInputStream()).thenReturn(inputStream);
+        byte[] packet = new byte[] {(byte) 0xE0,0x00};
 
-        assertThat(packageReader.isCleanDisconnect(socketMock)).isFalse();
+        assertThat(packageReader.isCleanDisconnect(socketMock,packet,2)).isFalse();
     }
     @Test
     @DisplayName("Should return false if isCleanDisconnect() is called without disconnectPackage")
     void shouldReturnFalseIfIsCleanDisconnectIsCalledWithoutDisconnectPackage() throws IOException {
         Socket socketMock = mock(Socket.class);
         setUpConnection(socketMock);
+        byte[] packet = new byte[] {(byte) 0x10,0x00};
 
-        assertThat(packageReader.isCleanDisconnect(socketMock)).isFalse();
+        assertThat(packageReader.isCleanDisconnect(socketMock,packet,2)).isFalse();
     }
     void setUpConnection(Socket socketMock) throws IOException {
         InputStream inputStream = new ByteArrayInputStream(new byte[]{0x10, 0x01, 0x00});
