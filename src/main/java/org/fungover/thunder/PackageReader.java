@@ -65,7 +65,7 @@ public class PackageReader {
         byte[] buffer = new byte[1024];
         int bytesRead = inputStream.read(buffer);
 
-        if (isDisconnectPackage(bytesRead, buffer)) {
+        if (isDisconnectPackage(buffer, bytesRead)) {
             System.out.println("Received MQTT DISCONNECT message from client");
             connectPackageSent.remove(client);
             return true;

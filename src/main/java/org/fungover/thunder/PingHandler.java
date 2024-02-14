@@ -8,6 +8,7 @@ public class PingHandler {
     private static final Logger logger = Logger.getLogger(PingHandler.class.getName());
 
     private PingHandler() {
+        throw new UnsupportedOperationException("Utility class, cannot be instantiated");
     }
     public static boolean isPingRequest( byte[] buffer, int bytesRead) throws IOException {
         return bytesRead > 0 && buffer[0] == (byte) 0xC0;

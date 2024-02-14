@@ -32,7 +32,7 @@ public class ClientHandler {
 
             while (!clientSocket.isClosed()) {
                 bytesRead = inputStream.read(buffer);
-                if (PackageReader.isDisconnectPackage(bytesRead, buffer)) {
+                if (PackageReader.isDisconnectPackage(buffer,bytesRead )) {
                     System.out.println("Received MQTT DISCONNECT message from client");
                     clientSocket.close();
                 } else if (PingHandler.isPingRequest(buffer, bytesRead)) {
