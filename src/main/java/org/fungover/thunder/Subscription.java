@@ -18,9 +18,7 @@ public class Subscription {
         List<Topic> matchingTopics = new ArrayList<>();
         Topic topic = Topic.create(new String(topicFilter, StandardCharsets.UTF_8), buffer[length - 1]);
 
-        Iterator<Map.Entry<Topic, List<Socket>>> iterator = subscriptions.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Topic, List<Socket>> entry = iterator.next();
+        for (Map.Entry<Topic, List<Socket>> entry : subscriptions.entrySet()) {
             Topic topicName = entry.getKey();
             if (topic.matchesWildcard(topicName.name())) {
                 matchingTopics.add(topicName);
@@ -32,8 +30,8 @@ public class Subscription {
             sockets.add(socket);
             subscriptions.put(topic, sockets);
         } else {
-            for (int i = 0; i < matchingTopics.size(); i++) {
-                subscriptions.get(matchingTopics.get(i)).add(socket);
+            for (Topic matchingTopic : matchingTopics) {
+                subscriptions.get(matchingTopic).add(socket);
             }
         }
         matchingTopics.clear();
