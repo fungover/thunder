@@ -1,5 +1,7 @@
 package org.fungover.thunder;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,18 +25,21 @@ public class ClientHandler {
             } else {
                 clientSocket.close();
             }
-            while (clients.contains(clientSocket)) {
-                if (PingHandler.isPingRequest(clientSocket)) {
+            InputStream inputStream = clientSocket.getInputStream();
+            OutputStream outputStream = clientSocket.getOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while (!clientSocket.isClosed()) {
+                bytesRead = inputStream.read(buffer);
+                if (PackageReader.isDisconnectPackage(bytesRead, buffer)) {
+                    System.out.println("Received MQTT DISCONNECT message from client");
+                    clientSocket.close();
+                } else if (PingHandler.isPingRequest(buffer, bytesRead)) {
                     System.out.println("Received MQTT PINGREQ message from client");
-                    if(!PingHandler.sendPingResponse(clientSocket))
-                        clientSocket.close();
+                    PingHandler.sendPingResponse(outputStream);
                 } else {
                     // Handle other types of messages
-                }
-                if (packageReader.isCleanDisconnect(clientSocket)) {
-                    clientSocket.close();
-                    clients.remove(clientSocket);
-                    break;
                 }
             }
             removeDisconnectedClients();
