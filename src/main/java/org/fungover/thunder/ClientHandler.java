@@ -1,6 +1,5 @@
 package org.fungover.thunder;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,15 +24,15 @@ public class ClientHandler {
                 clientSocket.close();
             }
             while (clients.contains(clientSocket)) {
-                if (packageReader.isCleanDisconnect(clientSocket)){
+                if (packageReader.isCleanDisconnect(clientSocket)) {
                     clientSocket.close();
                     clients.remove(clientSocket);
                     break;
                 }
             }
             removeDisconnectedClients();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -50,9 +49,7 @@ public class ClientHandler {
         }
     }
 
-
     public List<Socket> getClients() {
         return clients;
     }
-
 }

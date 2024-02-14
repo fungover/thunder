@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Broker {
-
+public class Server {
     private final ServerSocket serverSocket;
     private final ClientHandler clientHandler;
-    public Broker(ClientHandler clientHandler, ServerSocket serverSocket) {
-        this.clientHandler = clientHandler;
-        this.serverSocket = serverSocket;
+
+    public Server() throws IOException {
+        this.clientHandler = new ClientHandler();
+        this.serverSocket = new ServerSocket(1883);
     }
 
     public void start() throws IOException {
@@ -23,6 +23,7 @@ public class Broker {
                 Thread.ofVirtual().start(() -> clientHandler.handleConnection(connection));
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
