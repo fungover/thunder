@@ -54,7 +54,7 @@ public class PackageReader {
 
         if (buffer[0] == 0x10) {
             System.out.println("Sending connection package after connection is established is forbidden.");
-            return true;
+            return false;
         }
 
         if (buffer[0] == (byte) 0x82) {
