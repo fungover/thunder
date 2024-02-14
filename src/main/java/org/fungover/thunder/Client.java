@@ -22,25 +22,12 @@ public class Client {
         return connected;
     }
 
-    public void connect() {
-        if (!connected) {
-            // Establish a connection to the MQTT server
-            // Perform the MQTT connection handshake
-            System.out.println("Client " + clientId + " connected to server.");
-            connected = true;
-        } else {
-            System.out.println("Client " + clientId + " is already connected.");
-        }
-    }
-
-    public void disconnect() {
-        connected = false;
+    //Method here for now for testing purpose. Should be deleted when
+    public void subscribeToTopic(String topic) {
+        subscribedTopics.add(topic);
     }
 
     public Set<String> getSubscribedTopics() {
         return new HashSet<>(subscribedTopics);
     }
-
-
-
 }
