@@ -67,13 +67,7 @@ public class PackageReader {
             return true;
         }
 
-        if (isDisconnectPackage(bytesRead, buffer)) {
-            System.out.println("Received MQTT DISCONNECT message from client");
-            connectPackageSent.remove(clientSocket.getInetAddress());
-            return false;
-        }
-
-        return true;
+        return !isCleanDisconnect(clientSocket,buffer,bytesRead);
     }
 
     private static void sendMessageToClient(OutputStream outputStream, byte[] message) throws IOException {
@@ -102,27 +96,22 @@ public class PackageReader {
         return bytesRead > 0 && buffer[0] == (byte) 0xE0;
     }
 
-   /* public boolean isNotReadingFromClient(Socket socket) throws IOException {
+
+   public boolean isCleanDisconnect(Socket socket, byte[] buffer, int bytesRead) {
         InetAddress client = socket.getInetAddress();
 
         if (isClientConnected(client)) {
             return false;
         }
 
-        InputStream inputStream = socket.getInputStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead = inputStream.read(buffer);
-
         if (isDisconnectPackage(bytesRead, buffer)) {
             System.out.println("Received MQTT DISCONNECT message from client");
             connectPackageSent.remove(client);
             return true;
-        } else
+        }
 
         return false;
     }
-
-    */
 
     private boolean isClientConnected(InetAddress client) {
         return !connectPackageSent.containsKey(client);
