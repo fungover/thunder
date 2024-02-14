@@ -1,6 +1,5 @@
 package org.fungover.thunder;
 
-
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -9,14 +9,18 @@ import java.net.Socket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class PackageReaderTest {
+    private final PrintStream originalOut = System.out;
+    private final ByteArrayOutputStream mockOut = new ByteArrayOutputStream();
     PackageReader packageReader;
 
     @BeforeEach
     void setUp() {
         packageReader = new PackageReader();
+        System.setOut(new PrintStream(mockOut));
     }
 
     @Test
@@ -93,6 +97,7 @@ class PackageReaderTest {
 
         assertThat(packageReader.isCleanDisconnect(socketMock,packet,2)).isTrue();
     }
+
     @Test
     @DisplayName("Should return false if there was no connection prior to disconnect")
     void shouldReturnFalseIfThereWasNoConnectionPriorToDisconnect() throws IOException {
@@ -101,6 +106,7 @@ class PackageReaderTest {
 
         assertThat(packageReader.isCleanDisconnect(socketMock,packet,2)).isFalse();
     }
+
     @Test
     @DisplayName("Should return false if isCleanDisconnect() is called without disconnectPackage")
     void shouldReturnFalseIfIsCleanDisconnectIsCalledWithoutDisconnectPackage() throws IOException {
@@ -140,6 +146,7 @@ class PackageReaderTest {
 
         assertThat(packageReader.readFromClient(socketMock)).isFalse();
     }
+
 
 
     void setUpConnection(Socket socketMock) throws IOException {

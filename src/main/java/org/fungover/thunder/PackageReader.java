@@ -7,11 +7,13 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class PackageReader {
+    private static final int CONNECTION_TIMEOUT = 30000;
+    private static final Logger logger = Logger.getLogger(PackageReader.class.getName());
     private final Map<InetAddress, Boolean> connectPackageSent = new HashMap<>();
     private final Subscription subscription = new Subscription();
-    private static final int CONNECTION_TIMEOUT = 30000;
 
     public boolean isValidConnection(Socket socket) throws IOException {
         InetAddress client = socket.getInetAddress();
@@ -26,6 +28,7 @@ public class PackageReader {
         }
 
         if (isConnectPackage(bytesRead, buffer)) {
+            socket.setSoTimeout(0);
             System.out.println("Received MQTT CONNECT message from client");
             connectPackageSent.put(socket.getInetAddress(), true);
             sendConnackToClient(outputStream);
@@ -33,6 +36,7 @@ public class PackageReader {
             return true;
         }
 
+        logger.info("Received no MQTT CONNECT message. Disconnecting client " + client);
         return false;
     }
 

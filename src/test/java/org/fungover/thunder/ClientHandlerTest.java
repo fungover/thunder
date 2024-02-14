@@ -5,19 +5,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ClientHandlerTest {
     ClientHandler clientHandler;
     PackageReader packageReader;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         clientHandler = new ClientHandler();
         packageReader = mock(PackageReader.class);
     }
@@ -32,16 +35,16 @@ class ClientHandlerTest {
         InputStream disconnectPacket = new ByteArrayInputStream(new byte[]{(byte) 0xE0});
         OutputStream out = new ByteArrayOutputStream();
         when(socketMock.getOutputStream()).thenReturn(out);
-        when(socketMock.getInputStream()).thenReturn(connectPacket,disconnectPacket);
+        when(socketMock.getInputStream()).thenReturn(connectPacket, disconnectPacket);
 
         clientHandler.handleConnection(socketMock);
 
-        assertEquals(0,clientHandler.getClients().size());
+        assertEquals(0, clientHandler.getClients().size());
     }
-    
+
     @Test
     @DisplayName("Return 0 if not valid client connects")
-    void return0IfNotValitClientConnects() throws IOException {
+    void return0IfNotValidClientConnects() throws IOException {
         Socket socketMock = mock(Socket.class);
         InetSocketAddress inetSocketAddress = new InetSocketAddress("localhost", 1883);
         when(socketMock.getInetAddress()).thenReturn(inetSocketAddress.getAddress());
@@ -50,6 +53,22 @@ class ClientHandlerTest {
 
         clientHandler.handleConnection(socketMock);
 
-        assertEquals(0,clientHandler.getClients().size());
+        assertEquals(0, clientHandler.getClients().size());
+    }
+
+    @Test
+    @DisplayName("Should remove disconnected clients")
+    void shouldRemoveDisconnectedClients() throws IOException {
+        Socket socket1 = mock(Socket.class);
+        Socket socket2 = mock(Socket.class);
+        when(socket1.isClosed()).thenReturn(true);
+        when(socket2.isClosed()).thenReturn(false);
+        when(socket1.getInetAddress()).thenReturn(InetAddress.getByName("localhost"));
+        when(socket2.getInetAddress()).thenReturn(InetAddress.getByName("localhost"));
+
+        clientHandler.getClients().addAll(List.of(socket1, socket2));
+        clientHandler.removeDisconnectedClients();
+
+        assertEquals(Collections.singletonList(socket2), clientHandler.getClients());
     }
 }
