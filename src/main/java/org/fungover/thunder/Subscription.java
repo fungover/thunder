@@ -16,21 +16,23 @@ public class Subscription {
     public void read(int length, byte[] buffer, Socket socket) {
         byte[] topicFilter = Arrays.copyOfRange(buffer, 6, length - 1);
 
-
         Topic topic = Topic.create(new String(topicFilter, StandardCharsets.UTF_8), buffer[length - 1]);
 
         List<Topic> matchingTopics = listOfMatchedTopics(topic);
 
         if (topic.isValidForSubscription() && matchingTopics.isEmpty()) {
-            List<Socket> sockets = new CopyOnWriteArrayList<>();
-            sockets.add(socket);
-            subscriptions.putIfAbsent(topic, sockets);
+            addTopicAndSocketToMap(socket, topic);
         } else {
             for (Topic matchingTopic : matchingTopics) {
                 subscriptions.get(matchingTopic).add(socket);
             }
         }
+    }
 
+    private void addTopicAndSocketToMap(Socket socket, Topic topic) {
+        List<Socket> sockets = new CopyOnWriteArrayList<>();
+        sockets.add(socket);
+        subscriptions.putIfAbsent(topic, sockets);
     }
 
     private List<Topic> listOfMatchedTopics(Topic topic) {
