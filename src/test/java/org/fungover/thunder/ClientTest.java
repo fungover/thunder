@@ -27,7 +27,7 @@ class ClientTest {
     }
 
     @Test
-    public void givenClientHasSubscribedToTopicsThenGetSubscribedTopicsShouldReturnASetOfThoseTopics() {
+    void givenClientHasSubscribedToTopicsThenGetSubscribedTopicsShouldReturnASetOfThoseTopics() {
         String clientId = "testClient";
         Client client = new Client(clientId);
 
@@ -39,7 +39,7 @@ class ClientTest {
 
 
     @Test
-    public void givenClientHasNotSubscribedToAnyTopicThenGetSubscribedTopicsShouldReturnAnEmptyHashSet() {
+    void givenClientHasNotSubscribedToAnyTopicThenGetSubscribedTopicsShouldReturnAnEmptyHashSet() {
         String clientId = "testClient";
         Client client = new Client(clientId);
 
@@ -47,7 +47,7 @@ class ClientTest {
     }
 
     @Test
-    public void givenClientHasSubscribedToATopicTwiceThenGetSubscribedTopicsShouldReturnASetWithOnlyOneOccurrenceOfTheTopic() {
+    void givenClientHasSubscribedToATopicTwiceThenGetSubscribedTopicsShouldReturnASetWithOnlyOneOccurrenceOfTheTopic() {
         String clientId = "testClient";
         Client client = new Client(clientId);
 
