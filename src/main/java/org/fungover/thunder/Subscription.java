@@ -9,15 +9,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Subscription {
     private final ConcurrentHashMap<Topic, List<Socket>> subscriptions;
-
+    private final ReentrantReadWriteLock lock;
     Subscription() {
         this.subscriptions = new ConcurrentHashMap<>();
+        this.lock = new ReentrantReadWriteLock();
     }
 
     public void read(int length, byte[] buffer, Socket socket) {
         byte[] topicFilter = Arrays.copyOfRange(buffer, 6, length - 1);
         Topic topic = Topic.create(new String(topicFilter, StandardCharsets.UTF_8), buffer[length - 1]);
-        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         List<Topic> matchingTopics = listOfMatchedTopics(topic);
 
