@@ -73,9 +73,4 @@ public record Topic(String name, int qos) {
     public boolean isValidForSubscription() {
         return !name.startsWith("$") || !name.endsWith("/#");
     }
-
-    @Override
-    public String toString() {
-        return name;
-    }
 }
