@@ -71,7 +71,7 @@ public class PackageReader {
             return true;
         }
 
-        return !isCleanDisconnect(clientSocket,buffer,bytesRead);
+        return !isCleanDisconnect(clientSocket, buffer, bytesRead);
     }
 
     private static void sendMessageToClient(OutputStream outputStream, byte[] message) throws IOException {
@@ -101,7 +101,7 @@ public class PackageReader {
     }
 
 
-   public boolean isCleanDisconnect(Socket socket, byte[] buffer, int bytesRead) {
+    public boolean isCleanDisconnect(Socket socket, byte[] buffer, int bytesRead) {
         InetAddress client = socket.getInetAddress();
 
         if (isClientConnected(client)) {
