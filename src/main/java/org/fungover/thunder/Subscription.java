@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Subscription {
     private final ConcurrentHashMap<Topic, List<Socket>> subscriptions;
@@ -27,6 +29,8 @@ public class Subscription {
                 addTopicAndSocketToMap(socket, topic);
             } else {
                 for (Topic matchingTopic : matchingTopics) {
+                    if (subscriptions.get(matchingTopic).contains(socket))
+                        continue;
                     subscriptions.get(matchingTopic).add(socket);
                 }
             }
@@ -42,14 +46,7 @@ public class Subscription {
     }
 
     private List<Topic> listOfMatchedTopics(Topic topic) {
-        List<Topic> matchingTopics = new ArrayList<>();
-        for (Map.Entry<Topic, List<Socket>> entry : subscriptions.entrySet()) {
-            Topic topicName = entry.getKey();
-            if (topic.matchesWildcard(topicName.name())) {
-                matchingTopics.add(topicName);
-            }
-        }
-        return List.copyOf(matchingTopics);
+        return List.copyOf(subscriptions.keySet().stream().filter(sockets -> topic.matchesWildcard(sockets.name())).toList());
     }
 
     public Map<Topic, List<Socket>> getSubscriptions() {
