@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Subscription {
     private final ConcurrentHashMap<Topic, List<Socket>> subscriptions;
@@ -15,17 +16,22 @@ public class Subscription {
 
     public void read(int length, byte[] buffer, Socket socket) {
         byte[] topicFilter = Arrays.copyOfRange(buffer, 6, length - 1);
-
         Topic topic = Topic.create(new String(topicFilter, StandardCharsets.UTF_8), buffer[length - 1]);
+        ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         List<Topic> matchingTopics = listOfMatchedTopics(topic);
 
-        if (topic.isValidForSubscription() && matchingTopics.isEmpty()) {
-            addTopicAndSocketToMap(socket, topic);
-        } else {
-            for (Topic matchingTopic : matchingTopics) {
-                subscriptions.get(matchingTopic).add(socket);
+        lock.writeLock().lock();
+        try {
+            if (topic.isValidForSubscription() && matchingTopics.isEmpty()) {
+                addTopicAndSocketToMap(socket, topic);
+            } else {
+                for (Topic matchingTopic : matchingTopics) {
+                    subscriptions.get(matchingTopic).add(socket);
+                }
             }
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
