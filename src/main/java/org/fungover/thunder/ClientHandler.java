@@ -24,7 +24,7 @@ public class ClientHandler {
                 clientSocket.close();
             }
             while (clients.contains(clientSocket)) {
-                if (!packageReader.readFromClient(clientSocket)){
+                if (!packageReader.readFromClient(clientSocket)) {
                     clientSocket.close();
                     clients.remove(clientSocket);
                     break;
