@@ -24,7 +24,7 @@ public class PackageReader {
         return bytesRead > 0 && buffer[0] == (byte) 0x10;
     }
 
-    public static boolean isDisconnectPackage(int bytesRead, byte[] buffer) {
+    public static boolean isDisconnectPackage(byte[] buffer, int bytesRead) {
         return bytesRead > 0 && buffer[0] == (byte) 0xE0;
     }
 
