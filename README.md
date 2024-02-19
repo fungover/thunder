@@ -48,10 +48,10 @@ Follow these steps to run the application using Docker.
 #### Step 1: Pull the Docker Image
 
 \`\`\`
-docker pull fungover/thuder:latest
+docker pull fungover/thunder:latest
 \`\`\`
 #### Step 2: Run the Docker Container
 
 \`\`\`
-docker run -p 1883:1883 -d fungover/thuder:latest
+docker run -p 1883:1883 -d fungover/thunder:latest
 \`\`\`
