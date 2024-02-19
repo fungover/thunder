@@ -11,8 +11,8 @@ class TopicTest {
     @Test
     @DisplayName("Exact match when given two topics")
     void exactMatchWhenGivenTwoTopics() {
-        Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature");
-        Topic topic2 = Topic.create("myhome/first_floor/kitchen/temperature");
+        Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature", 1);
+        Topic topic2 = Topic.create("myhome/first_floor/kitchen/temperature", 1);
 
         assertThat(topic1).isEqualTo(topic2);
     }
@@ -20,8 +20,8 @@ class TopicTest {
     @Test
     @DisplayName("Not exact match when given two topics")
     void notExactMatchWhenGivenTwoTopics() {
-        Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature");
-        Topic topic2 = Topic.create("myhome/first_floor/kitchen/");
+        Topic topic1 = Topic.create("myhome/first_floor/kitchen/temperature", 1);
+        Topic topic2 = Topic.create("myhome/first_floor/kitchen/", 1);
 
         assertThat(topic1).isNotEqualTo(topic2);
     }
@@ -29,7 +29,7 @@ class TopicTest {
     @Test
     @DisplayName("Creating topic with empty string should throw IllegalArgumentException")
     void creatingTopicWithEmptyStringShouldThrowIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create(""));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create("", 1));
 
         assertThat(exception).hasMessage("Invalid topic: Should contain at least one character");
     }
@@ -37,7 +37,7 @@ class TopicTest {
     @Test
     @DisplayName("Topic can not start with forward slash")
     void topicCanNotStartWithForwardSlash() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create("/invalid/topic"));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> Topic.create("/invalid/topic", 1));
 
         assertThat(exception).hasMessage("Invalid topic: Can not begin with '/'");
     }
@@ -45,7 +45,7 @@ class TopicTest {
     @Test
     @DisplayName("Positive match with single level wildcard (+)")
     void positiveMatchWithSingleLevelWildcard() {
-        Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature");
+        Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature", 1);
 
         assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/livingroom/temperature")).isTrue();
         assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/temperature")).isTrue();
@@ -54,7 +54,7 @@ class TopicTest {
     @Test
     @DisplayName("Negative match with single level wildcard (+)")
     void negativeMatchWithSingleLevelWildcard() {
-        Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature");
+        Topic singleLevelWildcardTopic = Topic.create("myhome/groundfloor/+/temperature", 1);
 
         assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/brightness")).isFalse();
         assertThat(singleLevelWildcardTopic.matchesWildcard("myhome/firstfloor/kitchen/temperature")).isFalse();
@@ -64,7 +64,7 @@ class TopicTest {
     @Test
     @DisplayName("Positive match with multi level wildcard (#)")
     void positiveMatchWithMultiLevelWildcard() {
-        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
+        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#", 1);
 
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor/livingroom/temperature")).isTrue();
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor/kitchen/temperature")).isTrue();
@@ -74,7 +74,7 @@ class TopicTest {
     @Test
     @DisplayName("Negative match with multi level wildcard (#)")
     void negativeMatchWithMultiLevelWildcard() {
-        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
+        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#", 1);
 
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/firstfloor/kitchen/temperature")).isFalse();
     }
@@ -82,8 +82,8 @@ class TopicTest {
     @Test
     @DisplayName("Wrong placement for multi level wildcard in topic should throw Exception")
     void wrongPlacementForMultiLevelWildcardInTopic() {
-        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/#/temperature"));
-        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/groundfloor/#/kitchen/#"));
+        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/#/temperature", 1));
+        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myhome/groundfloor/#/kitchen/#", 1));
 
         assertThat(exception1).hasMessage("Invalid topic: Topic name does not follow MQTT topic naming conventions");
         assertThat(exception2).hasMessage("Invalid topic: Topic name does not follow MQTT topic naming conventions");
@@ -92,7 +92,7 @@ class TopicTest {
     @Test
     @DisplayName("No match when levels differ")
     void noMatchWhenWildcardTopicLevelsDiffer() {
-        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#");
+        Topic multiLevelWildcardTopic = Topic.create("myhome/groundfloor/#", 1);
 
         assertThat(multiLevelWildcardTopic.matchesWildcard("myhome/groundfloor")).isFalse();
     }
@@ -100,8 +100,8 @@ class TopicTest {
     @Test
     @DisplayName("creating a special character '$' topic should throw exception")
     void creatingASpecialCharacterTopicShouldThrowException() {
-        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("$SYS"));
-        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myHome/groundfloor/kitchen/fridge/$ensor"));
+        IllegalArgumentException exception1 = assertThrows(IllegalArgumentException.class, () -> Topic.create("$SYS", 1));
+        IllegalArgumentException exception2 = assertThrows(IllegalArgumentException.class, () -> Topic.create("myHome/groundfloor/kitchen/fridge/$ensor", 1));
 
         assertThat(exception1).hasMessage("Invalid topic: Can not contain '$'");
         assertThat(exception2).hasMessage("Invalid topic: Can not contain '$'");
@@ -110,7 +110,7 @@ class TopicTest {
     @Test
     @DisplayName("Topic that is valid for publishing")
     void topicThatIsValidForPublishing() {
-        Topic topic1 = Topic.create("myHome/groundfloor/kitchen/temp");
+        Topic topic1 = Topic.create("myHome/groundfloor/kitchen/temp", 1);
 
         assertThat(topic1.isValidForPublishing()).isTrue();
     }
@@ -118,9 +118,9 @@ class TopicTest {
     @Test
     @DisplayName("Wildcard topic not valid for publishing")
     void wildcardTopicNotValidForPublishing() {
-        Topic wildcardTopic1 = Topic.create("myHome/+/kitchen/#");
-        Topic wildcardTopic2 = Topic.create("myHome/groundfloor/+");
-        Topic wildcardTopic3 = Topic.create("myHome/groundfloor/#");
+        Topic wildcardTopic1 = Topic.create("myHome/+/kitchen/#", 1);
+        Topic wildcardTopic2 = Topic.create("myHome/groundfloor/+", 1);
+        Topic wildcardTopic3 = Topic.create("myHome/groundfloor/#", 1);
 
         assertThat(wildcardTopic1.isValidForPublishing()).isFalse();
         assertThat(wildcardTopic2.isValidForPublishing()).isFalse();
@@ -130,8 +130,8 @@ class TopicTest {
     @Test
     @DisplayName("Internal Topic not valid for publishing")
     void internalTopicNotValidForPublishing() {
-        Topic internalTopic1 = new Topic("$SYS");
-        Topic internalTopic2 = new Topic("$SYS/#");
+        Topic internalTopic1 = new Topic("$SYS", 1);
+        Topic internalTopic2 = new Topic("$SYS/#", 1);
 
         assertThat(internalTopic1.isValidForPublishing()).isFalse();
         assertThat(internalTopic2.isValidForPublishing()).isFalse();
@@ -140,11 +140,10 @@ class TopicTest {
     @Test
     @DisplayName("Valid topics for subscription")
     void topicValidForSubscription() {
-        Topic wildcardTopic1 = Topic.create("myHome/+/kitchen/#");
-        Topic wildcardTopic2 = Topic.create("myHome/groundfloor/+");
-        Topic wildcardTopic3 = Topic.create("myHome/groundfloor/#");
-        Topic wildcardTopic4 = Topic.create("myHome/groundfloor/kitchen/temp");
-
+        Topic wildcardTopic1 = Topic.create("myHome/+/kitchen/#", 1);
+        Topic wildcardTopic2 = Topic.create("myHome/groundfloor/+", 1);
+        Topic wildcardTopic3 = Topic.create("myHome/groundfloor/#", 1);
+        Topic wildcardTopic4 = Topic.create("myHome/groundfloor/kitchen/temp", 1);
 
         assertThat(wildcardTopic1.isValidForSubscription()).isTrue();
         assertThat(wildcardTopic2.isValidForSubscription()).isTrue();
@@ -155,7 +154,7 @@ class TopicTest {
     @Test
     @DisplayName("Valid internal topic for subscription")
     void validInternalTopicForSubscription() {
-        Topic internalTopic = new Topic("$SYS");
+        Topic internalTopic = new Topic("$SYS", 1);
 
         assertThat(internalTopic.isValidForSubscription()).isTrue();
     }
@@ -163,7 +162,7 @@ class TopicTest {
     @Test
     @DisplayName("Not valid internal topic for subscription")
     void notValidInternalTopicForSubscription() {
-        Topic internalTopic = new Topic("$SYS/#");
+        Topic internalTopic = new Topic("$SYS/#", 1);
 
         assertThat(internalTopic.isValidForSubscription()).isFalse();
     }
