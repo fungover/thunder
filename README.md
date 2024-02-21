@@ -41,3 +41,17 @@ This software is licensed under the MIT License, allowing you to use, copy, modi
 + Include the original copyright message and the MIT License in all copies or substantial portions of the software.
 For more details, refer to the [MIT License](LICENSE) file.
 
+## Running the Application with Docker
+
+Follow these steps to run the application using Docker.
+
+#### Step 1: Pull the Docker Image
+
+\`\`\`
+docker pull fungover/thunder:latest
+\`\`\`
+#### Step 2: Run the Docker Container
+
+\`\`\`
+docker run -p 1883:1883 -d fungover/thunder:latest
+\`\`\`
