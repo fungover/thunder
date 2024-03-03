@@ -26,4 +26,12 @@ public class Server {
             e.printStackTrace();
         }
     }
+    public void stop(){
+        try {
+            serverSocket.close();
+            System.out.println("Server stopped");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

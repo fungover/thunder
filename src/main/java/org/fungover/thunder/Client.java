@@ -30,4 +30,8 @@ public class Client {
     public Set<String> getSubscribedTopics() {
         return new HashSet<>(subscribedTopics);
     }
+
+    public void connectToServer(String localhost, int i) {
+        this.connected = true;
+    }
 }
