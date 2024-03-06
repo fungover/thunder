@@ -48,6 +48,9 @@ public class Client {
             if ("Connection successful".equals(response)) {
                 this.connected = true;
             }
+            else {
+                this.connected = false;
+            }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error during connection", e);
             throw e;

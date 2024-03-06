@@ -16,20 +16,24 @@ import java.util.logging.Level;
 
 class ServerTest {
     private static Server server;
+    private static CountDownLatch serverReadyLatch;
+
     @BeforeAll
     static void setUp() {
         try {
             server = new Server();
+            serverReadyLatch = new CountDownLatch(1);
+
             ExecutorService executorService = Executors.newFixedThreadPool(5);
-            CountDownLatch latch = new CountDownLatch(1);
             executorService.submit(() -> {
                 try {
                     server.start();
+                    serverReadyLatch.countDown();
                 } catch (IOException e) {
                     logger.log(Level.SEVERE, "Error starting server", e);
                 }
             });
-            latch.await(2, TimeUnit.SECONDS);
+            serverReadyLatch.await(2, TimeUnit.SECONDS);
         } catch (IOException | InterruptedException e) {
             logger.log(Level.SEVERE, "Error in setup", e);
         }
@@ -57,14 +61,11 @@ class ServerTest {
                 }
             });
         }
-
         executorService.shutdown();
-        while (!executorService.isTerminated()) {
-            try {
-                executorService.awaitTermination(2, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                logger.log(Level.SEVERE, "Error waiting for termination", e);
-            }
+        try {
+            executorService.awaitTermination(2, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Error waiting for termination", e);
         }
     }
 }
