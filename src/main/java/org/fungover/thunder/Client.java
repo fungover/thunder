@@ -1,7 +1,12 @@
 package org.fungover.thunder;
 
+import java.io.*;
+import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+
+import static org.fungover.thunder.Main.logger;
 
 public class Client {
     private final String clientId;
@@ -29,5 +34,26 @@ public class Client {
 
     public Set<String> getSubscribedTopics() {
         return new HashSet<>(subscribedTopics);
+    }
+
+    public void connectToServer(String serverAddress, int serverPort) throws IOException {
+        try (Socket socket = new Socket(serverAddress, serverPort);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            out.println("Hello from " + clientId);
+
+            String response = in.readLine();
+
+            if ("Connection successful".equals(response)) {
+                this.connected = true;
+            }
+            else {
+                this.connected = false;
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error during connection", e);
+            throw e;
+        }
     }
 }

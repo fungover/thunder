@@ -3,6 +3,10 @@ package org.fungover.thunder;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+
+import static org.fungover.thunder.Main.logger;
+
 
 public class Server {
     private final ServerSocket serverSocket;
@@ -24,6 +28,13 @@ public class Server {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public void stop(){
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 }

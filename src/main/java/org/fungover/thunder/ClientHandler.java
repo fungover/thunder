@@ -53,5 +53,4 @@ public class ClientHandler {
     public List<Socket> getClients() {
         return clients;
     }
-
 }
