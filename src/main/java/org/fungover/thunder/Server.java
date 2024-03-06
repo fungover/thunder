@@ -33,7 +33,6 @@ public class Server {
     public void stop(){
         try {
             serverSocket.close();
-            System.out.println("Server stopped");
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }

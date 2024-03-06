@@ -6,6 +6,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+
+import static org.fungover.thunder.Main.logger;
 
 public class Client {
     private final String clientId;
@@ -39,7 +42,15 @@ public class Client {
         try (Socket socket = new Socket(serverAddress, serverPort);
              ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-            this.connected = true;
+
+            out.writeObject("Hello from " + clientId);
+            String response = (String) in.readObject();
+
+            if ("Connection successful".equals(response)) {
+                this.connected = true;
+            }
+        } catch (ClassNotFoundException e) {
+            logger.log(Level.SEVERE, "Error during connection", e);
         }
     }
 }
