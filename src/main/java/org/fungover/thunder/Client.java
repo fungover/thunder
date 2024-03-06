@@ -1,8 +1,6 @@
 package org.fungover.thunder;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,17 +38,19 @@ public class Client {
 
     public void connectToServer(String serverAddress, int serverPort) throws IOException {
         try (Socket socket = new Socket(serverAddress, serverPort);
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            out.writeObject("Hello from " + clientId);
-            String response = (String) in.readObject();
+            out.println("Hello from " + clientId);
+
+            String response = in.readLine();
 
             if ("Connection successful".equals(response)) {
                 this.connected = true;
             }
-        } catch (ClassNotFoundException e) {
+        } catch (IOException e) {
             logger.log(Level.SEVERE, "Error during connection", e);
+            throw e;
         }
     }
 }

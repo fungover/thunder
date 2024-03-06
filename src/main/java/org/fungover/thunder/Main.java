@@ -17,5 +17,4 @@ public class Main {
             logger.log(Level.SEVERE, "Server not able to start", e);
         }
     }
-
 }

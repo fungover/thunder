@@ -3,39 +3,45 @@ package org.fungover.thunder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import static org.fungover.thunder.Main.logger;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
-public class ServerTest {
+class ServerTest {
     private static Server server;
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         try {
             server = new Server();
             ExecutorService executorService = Executors.newFixedThreadPool(5);
+            CountDownLatch latch = new CountDownLatch(1);
             executorService.submit(() -> {
                 try {
                     server.start();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.log(Level.SEVERE, "Error starting server", e);
                 }
             });
-            Thread.sleep(1000);
+            latch.await(2, TimeUnit.SECONDS);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error in setup", e);
         }
     }
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         if (server != null) {
             server.stop();
         }
     }
     @Test
-    public void testMultipleConnections() {
+    void testMultipleConnections() {
         int numClients = 5;
         ExecutorService executorService = Executors.newFixedThreadPool(numClients);
 
@@ -46,17 +52,18 @@ public class ServerTest {
                     Client client = new Client("Client" + clientId);
                     client.connectToServer("localhost", 1883);
                     assertTrue(client.isConnected());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (IOException e) {
+                    logger.log(Level.SEVERE, "Client connection failed", e);
                 }
             });
         }
+
         executorService.shutdown();
         while (!executorService.isTerminated()) {
             try {
-                Thread.sleep(100);
+                executorService.awaitTermination(2, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.log(Level.SEVERE, "Error waiting for termination", e);
             }
         }
     }
